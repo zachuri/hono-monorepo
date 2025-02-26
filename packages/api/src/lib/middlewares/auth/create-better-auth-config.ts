@@ -1,5 +1,6 @@
 import type { AppContext } from '@acme/api/types/app-context';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { jwt } from 'better-auth/plugins';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
 import { extractDomain } from '../../extractDomain';
@@ -29,7 +30,7 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
 		return acc;
 	}, {});
 
-	const isDevelopment = env(c).env === 'development';
+	const isProduction = env(c).env === 'production';
 
 	return {
 		baseURL: env(c).API_DOMAIN, // API URL
@@ -46,15 +47,16 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
 				enabled: true, // Enables cross-domain cookies
 			},
 			defaultCookieAttributes: {
-				sameSite: isDevelopment ? 'none' : 'lax',
+				sameSite: isProduction ? 'lax' : 'none',
 				secure: true,
-				domain: isDevelopment ? undefined : extractDomain(env(c).WEB_DOMAIN), // Use env var for frontend domain
+				domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
 			},
 		},
 		rateLimit: {
 			window: 10, // time window in seconds
 			max: 100, // max requests in the window
 		},
+		plugins: [jwt()],
 	};
 }
 
