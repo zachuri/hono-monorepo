@@ -1,34 +1,34 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1738918961468,
-      "tag": "0000_redundant_rhino",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1738919675962,
-      "tag": "0001_small_rachel_grey",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1740618932461,
-      "tag": "0002_famous_kronos",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1740619394214,
-      "tag": "0003_magenta_nico_minoru",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1738918961468,
+			"tag": "0000_redundant_rhino",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1738919675962,
+			"tag": "0001_small_rachel_grey",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1740618932461,
+			"tag": "0002_famous_kronos",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1756605185378,
+			"tag": "0003_light_galactus",
+			"breakpoints": true
+		}
+	]
 }

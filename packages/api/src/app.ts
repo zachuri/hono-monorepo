@@ -1,3 +1,4 @@
+import auth from '@acme/api/routes/auth';
 import index from '@acme/api/routes/index.route';
 import user from '@acme/api/routes/user/user.index';
 import { showRoutes } from 'hono/dev';
@@ -9,10 +10,10 @@ const app = createApp();
 configureOpenAPI(app);
 
 // const routes = [index, user] as const
-const routes = [index, user] as const;
+const routes = [index, user, auth] as const;
 
 for (const route of routes) {
-  app.route('/', route);
+	app.route('/', route);
 }
 
 showRoutes(app);
