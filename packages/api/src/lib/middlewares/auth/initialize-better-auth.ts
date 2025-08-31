@@ -16,25 +16,25 @@ import createBetterAuthConfig from './create-better-auth-config';
  * @returns The initialized BetterAuth instance.
  */
 export const initializeBetterAuth = (c: Context<AppContext>) => {
-  const isProduction = env(c).ENV === 'production';
+	const isDevelopment = env(c).ENV === 'development';
 
-  const db = c.get('db');
-  const betterAuthConfig = createBetterAuthConfig(db, c);
-  const auth = betterAuth({
-    ...betterAuthConfig,
-    advanced: {
-      crossSubDomainCookies: {
-        enabled: true, // Enables cross-domain cookies
-      },
-      defaultCookieAttributes: {
-        sameSite: isProduction ? 'lax' : 'none',
-        secure: true,
-        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
-      },
-    },
-  });
-  c.set('auth', auth);
-  return auth;
+	const db = c.get('db');
+	const betterAuthConfig = createBetterAuthConfig(db, c);
+	const auth = betterAuth({
+		...betterAuthConfig,
+		advanced: {
+			crossSubDomainCookies: {
+				enabled: true, // Enables cross-domain cookies
+			},
+			defaultCookieAttributes: {
+				sameSite: isDevelopment ? 'none' : 'lax',
+				secure: true,
+				domain: isDevelopment ? undefined : extractDomain(env(c).WEB_DOMAIN), // Use env var for frontend domain
+			},
+		},
+	});
+	c.set('auth', auth);
+	return auth;
 };
 
 /**
