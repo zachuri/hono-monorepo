@@ -2,7 +2,7 @@
 
 - [x] project wil be name acme
 - [x] storybook for ui framework
-- [ ] storybook setup docs for ui components
+- [x] storybook setup docs for ui components
 
 - [x] lefthook
 - [x] biome linter setup
