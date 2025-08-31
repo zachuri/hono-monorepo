@@ -2,27 +2,19 @@ name = "hono-learn"
 main = "src/index.ts"
 compatibility_date = "2024-12-24"
 
-# compatibility_flags = [ "nodejs_compat" ]
+[env.production]
+name = "hono-monorepo-production"
 
-# [vars]
-# MY_VAR = "my-variable"
+[[env.production.routes]]
+pattern = "hono-monorepo-api.zachuri.com/*"
+zone_name = "zachuri.com"
 
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+[env.staging]
+name = "hono-monorepo-staging"
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+[[env.staging.routes]]
+pattern = "hono-monorepo-staging-api.zachuri.com/*"
+zone_name = "zachuri.com"
 
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "my-database"
-# database_id = ""
-
-# [ai]
-# binding = "AI"
-
-# [observability]
-# enabled = true
-# head_sampling_rate = 1
+[env.production.vars]
+# API_HOST = "hono-api.zachuri.com"
