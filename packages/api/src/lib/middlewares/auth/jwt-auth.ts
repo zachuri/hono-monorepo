@@ -22,7 +22,7 @@ export async function jwtAuthMiddleware(c: Context<AppContext>, next: () => Prom
 		return next();
 	}
 
-	const token = authHeader.replace('Bearer ', '');
+	const _token = authHeader.replace('Bearer ', '');
 
 	try {
 		// Validate JWT token
