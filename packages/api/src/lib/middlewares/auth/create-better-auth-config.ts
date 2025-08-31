@@ -17,45 +17,45 @@ const enabledProviders = ['discord', 'google', 'github'];
  * @returns A configuration object for BetterAuth.
  */
 export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) {
-  // Use the context to access environment variables
-  const configuredProviders = enabledProviders.reduce<
-    Record<string, { clientId: string; clientSecret: string }>
-  >((acc, provider) => {
-    const id = env(c)[`${provider.toUpperCase()}_CLIENT_ID`] as string;
-    const secret = env(c)[`${provider.toUpperCase()}_CLIENT_SECRET`] as string;
-    if (id && id.length > 0 && secret && secret.length > 0) {
-      acc[provider] = { clientId: id, clientSecret: secret };
-    }
-    return acc;
-  }, {});
+	// Use the context to access environment variables
+	const configuredProviders = enabledProviders.reduce<
+		Record<string, { clientId: string; clientSecret: string }>
+	>((acc, provider) => {
+		const id = env(c)[`${provider.toUpperCase()}_CLIENT_ID`] as string;
+		const secret = env(c)[`${provider.toUpperCase()}_CLIENT_SECRET`] as string;
+		if (id && id.length > 0 && secret && secret.length > 0) {
+			acc[provider] = { clientId: id, clientSecret: secret };
+		}
+		return acc;
+	}, {});
 
-  const isProduction = env(c).env === 'production';
+	const isDevelopment = env(c).env === 'development';
 
-  return {
-    baseURL: env(c).API_DOMAIN, // API URL
-    trustedOrigins: [env(c).API_DOMAIN, env(c).WEB_DOMAIN], // Needed for cross domain cookies
-    database: drizzleAdapter(dbInstance, {
-      provider: 'pg',
-    }),
-    emailAndPassword: {
-      enabled: true,
-    },
-    socialProviders: configuredProviders,
-    advanced: {
-      crossSubDomainCookies: {
-        enabled: true, // Enables cross-domain cookies
-      },
-      defaultCookieAttributes: {
-        sameSite: isProduction ? 'lax' : 'none',
-        secure: true,
-        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
-      },
-    },
-    rateLimit: {
-      window: 10, // time window in seconds
-      max: 100, // max requests in the window
-    },
-  };
+	return {
+		baseURL: env(c).API_DOMAIN, // API URL
+		trustedOrigins: [env(c).API_DOMAIN, env(c).WEB_DOMAIN], // Needed for cross domain cookies
+		database: drizzleAdapter(dbInstance, {
+			provider: 'pg',
+		}),
+		emailAndPassword: {
+			enabled: true,
+		},
+		socialProviders: configuredProviders,
+		advanced: {
+			crossSubDomainCookies: {
+				enabled: true, // Enables cross-domain cookies
+			},
+			defaultCookieAttributes: {
+				sameSite: isDevelopment ? 'none' : 'lax',
+				secure: true,
+				domain: isDevelopment ? undefined : extractDomain(env(c).WEB_DOMAIN), // Use env var for frontend domain
+			},
+		},
+		rateLimit: {
+			window: 10, // time window in seconds
+			max: 100, // max requests in the window
+		},
+	};
 }
 
 export default createBetterAuthConfig;
