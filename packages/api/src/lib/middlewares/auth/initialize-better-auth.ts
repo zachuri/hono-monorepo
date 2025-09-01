@@ -33,11 +33,11 @@ export const initializeBetterAuth = (c: Context<AppContext>) => {
 			},
 		},
 	});
-	c.set('auth', auth);
+	c.set('betterAuth', auth);
 	return auth;
 };
 
 /**
  * Type definition for the Auth object returned by BetterAuth.
  */
-export type Auth = ReturnType<typeof betterAuth>;
+export type BetterAuth = ReturnType<typeof betterAuth>;

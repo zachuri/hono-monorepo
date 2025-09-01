@@ -16,3 +16,6 @@
 - [ ] ~~host next js on cloudflare~~
 
 - [ ] maybe add nextra (blog)
+
+- [ ] auth jwt
+  - [ ] need to setup jwt with bearer token in the client

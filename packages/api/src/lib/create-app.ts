@@ -9,7 +9,6 @@ import {
 	betterAuthCorsMiddleware,
 	handleSessionMiddleware,
 	initializeBetterAuth,
-	jwtAuthMiddleware,
 	requireAuth,
 } from './middlewares/auth';
 import { defaultHook } from './openapi';
@@ -41,11 +40,10 @@ export default function createApp() {
 		// /auth/**  auth routes or * for all routes to have cors*/
 		.use('*', (c, next) => betterAuthCorsMiddleware(c)(c, next))
 		.use('*', handleSessionMiddleware)
-		.use('*', jwtAuthMiddleware)
 		// Better Auth route config
 		// Note: /api is needed for better auth
 		.on(['POST', 'GET'], '/api/auth/**', c => {
-			const auth = c.get('auth');
+			const auth = c.get('betterAuth');
 			return auth.handler(c.req.raw);
 		})
 		.notFound(notFound)

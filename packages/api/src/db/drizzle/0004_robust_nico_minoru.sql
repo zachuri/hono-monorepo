@@ -1,0 +1,1 @@
+ALTER TABLE "jwk" RENAME TO "jwks";

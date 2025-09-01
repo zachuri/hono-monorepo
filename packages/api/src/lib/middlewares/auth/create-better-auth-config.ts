@@ -1,8 +1,9 @@
 import type { AppContext } from '@acme/api/types/app-context';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { jwt } from 'better-auth/plugins';
+import { jwt, openAPI } from 'better-auth/plugins';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
+import * as schema from '../../../db/schemas';
 import { extractDomain } from '../../extractDomain';
 
 const enabledProviders = ['discord', 'google', 'github'];
@@ -37,6 +38,7 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
 		trustedOrigins: [env(c).API_DOMAIN, env(c).WEB_DOMAIN], // Needed for cross domain cookies
 		database: drizzleAdapter(dbInstance, {
 			provider: 'pg',
+			schema,
 		}),
 		emailAndPassword: {
 			enabled: true,
@@ -56,7 +58,7 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
 			window: 10, // time window in seconds
 			max: 100, // max requests in the window
 		},
-		plugins: [jwt()],
+		plugins: [jwt(), openAPI()], // Add openAPI plugin for API documentation
 	};
 }
 
