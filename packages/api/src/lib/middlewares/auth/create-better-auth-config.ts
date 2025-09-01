@@ -1,6 +1,7 @@
 import type { Database } from '@acme/api/db';
 import * as schema from '@acme/api/db/schemas';
 import type { AppContext } from '@acme/api/types/app-context';
+import type { IncomingRequestCfProperties } from '@cloudflare/workers-types';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
@@ -44,10 +45,6 @@ export function createBetterAuthConfig(
 			? env(c).PRODUCTION_KV_NAMESPACE
 			: env(c).STAGING_KV_NAMESPACE;
 
-	console.log('�� Environment:', env(c).WORKER_ENV);
-	console.log('🔵 KV Namespace:', kvNamespace ? 'Found' : 'Not found');
-	console.log('🔵 KV Namespace 2:', kvNamespace);
-
 	return {
 		baseURL: env(c).API_DOMAIN, // API URL
 		trustedOrigins: [env(c).API_DOMAIN, env(c).WEB_DOMAIN], // Needed for cross domain cookies
@@ -56,9 +53,25 @@ export function createBetterAuthConfig(
 			schema,
 			// debugLogs: true,
 		}),
-		cf: cf || {},
-		// Use the correct KV namespace based on environment
-		kv: kvNamespace,
+		secondaryStorage: {
+			get: async (key: string) => {
+				// Retrieves data from KV with error handling
+				const value = await kvNamespace.get(key);
+				return value;
+			},
+			set: async (key: string, value: string, ttl?: number) => {
+				// Stores data in KV with optional TTL
+				if (ttl) {
+					await kvNamespace.put(key, value, { expirationTtl: ttl });
+				} else {
+					await kvNamespace.put(key, value);
+				}
+			},
+			delete: async (key: string) => {
+				// Removes data from KV
+				await kvNamespace.delete(key);
+			},
+		},
 		// Add KV caching configuration
 		cache: {
 			enabled: true,
