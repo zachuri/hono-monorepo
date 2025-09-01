@@ -16,10 +16,11 @@ import createBetterAuthConfig from './create-better-auth-config';
  * @returns The initialized BetterAuth instance.
  */
 export const initializeBetterAuth = (c: Context<AppContext>) => {
-	const isDevelopment = env(c).ENV === 'development';
+	const isDevelopment = env(c).WORKER_ENV === 'development';
 
 	const db = c.get('db');
-	const betterAuthConfig = createBetterAuthConfig(db, c);
+	const betterAuthConfig = createBetterAuthConfig(db, c, (c.req.raw as any).cf || {});
+
 	const auth = betterAuth({
 		...betterAuthConfig,
 		advanced: {

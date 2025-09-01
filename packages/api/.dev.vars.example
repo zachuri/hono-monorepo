@@ -1,5 +1,5 @@
 DATABASE_URL= # URL for the Neon Database connection
-ENV= # Environment setting, e.g., development, staging, production
+WORKER_ENV= # Environment setting, e.g., development, staging, production
 JWT_SECRET= # Secret key for signing JSON Web Tokens
 GITHUB_CLIENT_ID= # GitHub OAuth client ID
 GITHUB_CLIENT_SECRET= # GitHub OAuth client secret
