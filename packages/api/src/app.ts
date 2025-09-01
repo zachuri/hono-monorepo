@@ -12,7 +12,7 @@ configureOpenAPI(app);
 const routes = [index, user] as const;
 
 for (const route of routes) {
-  app.route('/', route);
+	app.route('/', route);
 }
 
 showRoutes(app);

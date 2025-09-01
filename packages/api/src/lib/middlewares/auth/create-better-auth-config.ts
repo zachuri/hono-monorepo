@@ -1,7 +1,9 @@
 import type { AppContext } from '@acme/api/types/app-context';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { jwt, openAPI } from 'better-auth/plugins';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
+import * as schema from '../../../db/schemas';
 import { extractDomain } from '../../extractDomain';
 
 const enabledProviders = ['discord', 'google', 'github'];
@@ -29,13 +31,14 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
 		return acc;
 	}, {});
 
-	const isDevelopment = env(c).env === 'development';
+	const isProduction = env(c).env === 'production';
 
 	return {
 		baseURL: env(c).API_DOMAIN, // API URL
 		trustedOrigins: [env(c).API_DOMAIN, env(c).WEB_DOMAIN], // Needed for cross domain cookies
 		database: drizzleAdapter(dbInstance, {
 			provider: 'pg',
+			schema,
 		}),
 		emailAndPassword: {
 			enabled: true,
@@ -46,15 +49,16 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
 				enabled: true, // Enables cross-domain cookies
 			},
 			defaultCookieAttributes: {
-				sameSite: isDevelopment ? 'none' : 'lax',
+				sameSite: isProduction ? 'lax' : 'none',
 				secure: true,
-				domain: isDevelopment ? undefined : extractDomain(env(c).WEB_DOMAIN), // Use env var for frontend domain
+				domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
 			},
 		},
 		rateLimit: {
 			window: 10, // time window in seconds
 			max: 100, // max requests in the window
 		},
+		plugins: [jwt(), openAPI()], // Add openAPI plugin for API documentation
 	};
 }
 

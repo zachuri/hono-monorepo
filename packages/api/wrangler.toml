@@ -16,5 +16,11 @@ name = "hono-monorepo-staging"
 pattern = "hono-monorepo-staging-api.zachuri.com/*"
 zone_name = "zachuri.com"
 
-[env.production.vars]
+
+# For public vars
+
+# [env.staging.vars]
+# API_HOST = "hono-api.zachuri.com"
+
+# [env.production.vars]
 # API_HOST = "hono-api.zachuri.com"
