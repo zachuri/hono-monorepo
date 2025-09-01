@@ -22,7 +22,7 @@ const enabledProviders = ['discord', 'google', 'github'];
 export function createBetterAuthConfig(
 	dbInstance: Database,
 	c: Context<AppContext>,
-	cf: IncomingRequestCfProperties,
+	_cf: IncomingRequestCfProperties,
 ) {
 	// Use the context to access environment variables
 	const configuredProviders = enabledProviders.reduce<
