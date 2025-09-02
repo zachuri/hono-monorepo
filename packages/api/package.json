@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "wrangler dev",
+		"dev:remote": "wrangler dev --remote",
 		"validate": "biome .",
 		"lint": "bunx --bun biome lint --write .",
 		"lint:fix": "bunx --bun biome lint --write --unsafe .",

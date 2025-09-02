@@ -16,3 +16,7 @@
 - [ ] ~~host next js on cloudflare~~
 
 - [ ] maybe add nextra (blog)
+
+- [ ] kv storage cache with better auth
+- [ ] geo location
+- [ ] ip identifier
