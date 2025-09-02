@@ -12,33 +12,33 @@ import type { Context } from 'hono';
  * @param next - The next function to run
  */
 export async function handleSessionMiddleware(c: Context<AppContext>, next: () => Promise<void>) {
-  const auth = c.get('auth'); // Retrieve auth from context
-  if (!auth) {
-    console.error('Auth is not initialized');
-    return next();
-  }
+	const auth = c.get('betterAuth'); // Retrieve auth from context
+	if (!auth) {
+		console.error('Auth is not initialized');
+		return next();
+	}
 
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
-  if (!session) {
-    c.set('user', null);
-    c.set('session', null);
+	if (!session) {
+		c.set('user', null);
+		c.set('session', null);
 
-    return next();
-  }
+		return next();
+	}
 
-  const user = {
-    ...session.user,
-    image: session.user.image ?? null,
-  };
+	const user = {
+		...session.user,
+		image: session.user.image ?? null,
+	};
 
-  const sessionData = {
-    ...session.session,
-    ipAddress: session.session.ipAddress ?? null,
-    userAgent: session.session.userAgent ?? null,
-  };
+	const sessionData = {
+		...session.session,
+		ipAddress: session.session.ipAddress ?? null,
+		userAgent: session.session.userAgent ?? null,
+	};
 
-  c.set('user', user);
-  c.set('session', sessionData);
-  return next();
+	c.set('user', user);
+	c.set('session', sessionData);
+	return next();
 }

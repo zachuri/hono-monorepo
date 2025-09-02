@@ -1,4 +1,7 @@
+import type { Database } from '@acme/api/db';
+import * as schema from '@acme/api/db/schemas';
 import type { AppContext } from '@acme/api/types/app-context';
+import type { IncomingRequestCfProperties } from '@cloudflare/workers-types';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
@@ -16,7 +19,11 @@ const enabledProviders = ['discord', 'google', 'github'];
  * @param c - The context object containing environment variables.
  * @returns A configuration object for BetterAuth.
  */
-export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) {
+export function createBetterAuthConfig(
+	dbInstance: Database,
+	c: Context<AppContext>,
+	_cf: IncomingRequestCfProperties,
+) {
 	// Use the context to access environment variables
 	const configuredProviders = enabledProviders.reduce<
 		Record<string, { clientId: string; clientSecret: string }>
@@ -29,14 +36,60 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
 		return acc;
 	}, {});
 
-	const isDevelopment = env(c).env === 'development';
+	const isDevelopment = env(c).WORKER_ENV === 'development';
+
+	// Get the correct KV namespace based on environment
+	const kvNamespace = env(c).KV_BETTER_AUTH;
 
 	return {
 		baseURL: env(c).API_DOMAIN, // API URL
 		trustedOrigins: [env(c).API_DOMAIN, env(c).WEB_DOMAIN], // Needed for cross domain cookies
 		database: drizzleAdapter(dbInstance, {
 			provider: 'pg',
+			schema,
+			// debugLogs: true,
 		}),
+		secondaryStorage: {
+			get: async (key: string) => {
+				// Retrieves data from KV with error handling
+				const value = await kvNamespace.get(key);
+				return value;
+			},
+			set: async (key: string, value: string, ttl?: number) => {
+				// Stores data in KV with optional TTL
+				if (ttl) {
+					await kvNamespace.put(key, value, { expirationTtl: ttl });
+				} else {
+					await kvNamespace.put(key, value);
+				}
+			},
+			delete: async (key: string) => {
+				// Removes data from KV
+				await kvNamespace.delete(key);
+			},
+		},
+		// Add KV caching configuration
+		cache: {
+			enabled: true,
+			// Cache user data for 5 minutes
+			user: {
+				ttl: 300, // 5 minutes in seconds
+			},
+			// Cache session data for 1 minute
+			session: {
+				ttl: 60, // 1 minute in seconds
+			},
+			// Cache account data for 10 minutes
+			account: {
+				ttl: 600, // 10 minutes in seconds
+			},
+			// Cache verification token for 15 minutes
+			verificationToken: {
+				ttl: 900, // 15 minutes in seconds
+			},
+		},
+		autoDetectIpAddress: true,
+		geolocationTracking: true,
 		emailAndPassword: {
 			enabled: true,
 		},

@@ -2,8 +2,19 @@ name = "hono-learn"
 main = "src/index.ts"
 compatibility_date = "2024-12-24"
 
+# Local development KV
+[[kv_namespaces]]
+binding = "KV_BETTER_AUTH"
+id = "acfb6448369840a1ac00caec6a90c596"
+preview_id = "acfb6448369840a1ac00caec6a90c596"
+
 [env.production]
 name = "hono-monorepo-production"
+
+# Production KV namespace
+[[env.production.kv_namespaces]]
+binding = "KV_BETTER_AUTH"  # Same binding name
+id = "e3dae129577647a6a921d32f520e4bda" # `bunx wrangler kv namespace create KV_BETTER_AUTH_PROD`
 
 [[env.production.routes]]
 pattern = "hono-monorepo-api.zachuri.com/*"
@@ -12,9 +23,20 @@ zone_name = "zachuri.com"
 [env.staging]
 name = "hono-monorepo-staging"
 
+# Staging KV namespace
+[[env.staging.kv_namespaces]]
+binding = "KV_BETTER_AUTH"  # Same binding name
+id = "8f8e49da86e94252b74a84c33f684c59" # `bunx wrangler kv namespace create KV_BETTER_AUTH_STAGING`
+
 [[env.staging.routes]]
 pattern = "hono-monorepo-staging-api.zachuri.com/*"
 zone_name = "zachuri.com"
 
-[env.production.vars]
+
+# For public vars
+
+# [env.staging.vars]
+# API_HOST = "hono-api.zachuri.com"
+
+# [env.production.vars]
 # API_HOST = "hono-api.zachuri.com"
