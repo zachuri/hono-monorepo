@@ -268,6 +268,102 @@ For more information, refer to the official [Changesets documentation](https://g
 
 This Turborepo is set up for easy deployment of its various applications.
 
+### Environment Setup 🔧
+
+This project supports multiple environments: development, staging, and production. Each environment has its own configuration files and deployment process.
+
+#### Environment Files Structure
+
+```
+packages/api/
+├── .dev.vars.local      # Local development variables
+├── .dev.vars.staging    # Staging environment variables
+├── .dev.vars.production # Production environment variables
+└── wrangler.toml        # Wrangler configuration
+```
+
+#### Required Environment Variables
+
+**Client-Side (Next.js Apps)**
+
+```bash
+NEXT_PUBLIC_APP_URL=    # Your app's public URL
+NEXT_PUBLIC_API_URL=    # Your API's public URL
+```
+
+**Server-Side (API)**
+
+```bash
+API_URL=                # Internal API URL
+ENV=                    # "development", "staging", or "production"
+DATABASE_URL=           # Database connection string
+# Add other API-specific variables as needed
+```
+
+#### Vercel Setup
+
+1. **Create Environment Branches**
+
+   - `main` branch → Production deployment
+   - `staging` branch → Preview deployment
+
+2. **Configure Environment Variables in Vercel**
+
+   **Production (main branch):**
+
+   - Go to your Vercel project settings
+   - Navigate to Environment Variables
+   - Add the required variables for production
+
+   **Preview (staging branch):**
+
+   - Same location, but set for Preview environment
+   - Use staging-specific values
+
+3. **Environment Variable Mapping**
+
+   ```bash
+   # Production
+   NEXT_PUBLIC_APP_URL=https://yourdomain.com
+   NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+
+   # Staging
+   NEXT_PUBLIC_APP_URL=https://staging.yourdomain.com
+   NEXT_PUBLIC_API_URL=https://staging-api.yourdomain.com
+   ```
+
+#### API Deployment (Cloudflare Workers)
+
+The `packages/api` uses Wrangler for deployment to Cloudflare Workers.
+
+**Available Scripts:**
+
+```bash
+# Staging deployment
+bun run deploy:staging
+
+# Production deployment
+bun run deploy:production
+
+# Push secrets to staging
+bun run push:secret:staging
+
+# Push secrets to production
+bun run push:secret:production
+```
+
+**Deployment Process:**
+
+1. Ensure your `.dev.vars.staging` and `.dev.vars.production` files are properly configured
+2. Run the appropriate deployment command
+3. Secrets are automatically pushed to the corresponding environment
+
+**Environment-Specific Configuration:**
+
+- `wrangler.toml` contains environment-specific settings
+- Each environment can have different configurations (e.g., different worker names, routes)
+- Secrets are managed per environment for security
+
 ### Vercel Deployment 🌐
 
 The `docs` and `web` apps can be deployed to Vercel without any additional configuration. This allows for quick and easy deployment of your Next.js applications.
