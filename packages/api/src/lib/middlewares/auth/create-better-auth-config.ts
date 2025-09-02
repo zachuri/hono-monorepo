@@ -3,6 +3,7 @@ import * as schema from '@acme/api/db/schemas';
 import type { AppContext } from '@acme/api/types/app-context';
 import type { IncomingRequestCfProperties } from '@cloudflare/workers-types';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { withCloudflare } from 'better-auth-cloudflare';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
 import { extractDomain } from '../../extractDomain';
@@ -10,20 +11,22 @@ import { extractDomain } from '../../extractDomain';
 const enabledProviders = ['discord', 'google', 'github'];
 
 /**
- * Creates a configuration object for BetterAuth.
+ * Creates a configuration object for BetterAuth with Cloudflare integration.
  *
  * This function sets up the configuration for BetterAuth, including the base URL,
  * trusted origins, database adapter, authentication methods, and advanced settings.
+ * Now includes Cloudflare-specific features like geolocation and enhanced IP detection.
  *
  * @param dbInstance - The database instance to be used with BetterAuth.
  * @param c - The context object containing environment variables.
- * @returns A configuration object for BetterAuth.
+ * @param cf - Cloudflare request properties for geolocation data.
+ * @returns A configuration object for BetterAuth with Cloudflare integration.
  */
 export function createBetterAuthConfig(
 	dbInstance: Database,
 	c: Context<AppContext>,
-	_cf: IncomingRequestCfProperties,
-) {
+	cf: IncomingRequestCfProperties,
+): any {
 	// Use the context to access environment variables
 	const configuredProviders = enabledProviders.reduce<
 		Record<string, { clientId: string; clientSecret: string }>
@@ -41,7 +44,8 @@ export function createBetterAuthConfig(
 	// Get the correct KV namespace based on environment
 	const kvNamespace = env(c).KV_BETTER_AUTH;
 
-	return {
+	// Base Better Auth configuration
+	const baseConfig = {
 		baseURL: env(c).API_DOMAIN, // API URL
 		trustedOrigins: [env(c).API_DOMAIN, env(c).WEB_DOMAIN], // Needed for cross domain cookies
 		database: drizzleAdapter(dbInstance, {
@@ -88,8 +92,6 @@ export function createBetterAuthConfig(
 				ttl: 900, // 15 minutes in seconds
 			},
 		},
-		autoDetectIpAddress: true,
-		geolocationTracking: true,
 		emailAndPassword: {
 			enabled: true,
 		},
@@ -99,7 +101,7 @@ export function createBetterAuthConfig(
 				enabled: true, // Enables cross-domain cookies
 			},
 			defaultCookieAttributes: {
-				sameSite: isDevelopment ? 'none' : 'lax',
+				sameSite: isDevelopment ? ('none' as const) : ('lax' as const),
 				secure: true,
 				domain: isDevelopment ? undefined : extractDomain(env(c).WEB_DOMAIN), // Use env var for frontend domain
 			},
@@ -109,6 +111,17 @@ export function createBetterAuthConfig(
 			max: 100, // max requests in the window
 		},
 	};
+
+	// Wrap with Cloudflare integration
+	return withCloudflare(
+		{
+			// Cloudflare-specific configuration
+			kv: kvNamespace,
+			// Pass Cloudflare request properties for geolocation
+			cf,
+		},
+		baseConfig,
+	);
 }
 
 export default createBetterAuthConfig;

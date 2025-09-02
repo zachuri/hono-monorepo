@@ -5,13 +5,13 @@
 - [ ] KV
 
   - [x] kv storage cache with better auth
-  - [ ] doc of my findings
-  - [ ]
+  - [x] doc of my findings
+  - [x] better-auth-cloudflare integration
 
 - [ ] setup for jwt figure it out?
 
-- [ ] geo location
-- [ ] ip identifier
+- [x] geo location
+- [x] ip identifier
 
 # Other cool setup
 

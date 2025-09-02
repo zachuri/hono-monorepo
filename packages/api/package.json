@@ -30,6 +30,7 @@
 		"@scalar/hono-api-reference": "^0.9.16",
 		"@tsndr/cloudflare-worker-jwt": "^3.2.0",
 		"arctic": "^3.7.0",
+		"better-auth-cloudflare": "^0.2.4",
 		"crypto": "^1.0.1",
 		"dotenv": "^17.2.1",
 		"drizzle-kit": "^0.31.4",

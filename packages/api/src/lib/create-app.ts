@@ -11,6 +11,7 @@ import {
 	initializeBetterAuth,
 	requireAuth,
 } from './middlewares/auth';
+import { ipLoggingMiddleware } from './middlewares/ip-logging';
 import { defaultHook } from './openapi';
 
 // Router for OPENAPI
@@ -40,6 +41,8 @@ export default function createApp() {
 		// /auth/**  auth routes or * for all routes to have cors*/
 		.use('*', (c, next) => betterAuthCorsMiddleware(c)(c, next))
 		.use('*', handleSessionMiddleware)
+		// Add IP logging middleware
+		.use('*', ipLoggingMiddleware())
 		// Better Auth route config
 		// Note: /api is needed for better auth
 		.on(['POST', 'GET'], '/api/auth/**', c => {
