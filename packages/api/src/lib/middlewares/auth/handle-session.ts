@@ -40,5 +40,14 @@ export async function handleSessionMiddleware(c: Context<AppContext>, next: () =
 
 	c.set('user', user);
 	c.set('session', sessionData);
+
+	// EXAMPLE OF GETTING GEOLOCATION/IP ADDRESS DATA
+	const geolocation = c.get('geolocation');
+	const data = geolocation.getGeolocation();
+	const ip = geolocation.getIPAddress();
+
+	console.log('data', data);
+	console.log('ip', ip);
+
 	return next();
 }
