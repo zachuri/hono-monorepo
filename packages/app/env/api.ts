@@ -18,10 +18,7 @@ const EnvSchema = z.object({
 	BETTER_AUTH_SECRET: z.string(),
 	WEB_DOMAIN: z.string(),
 	RATE_LIMITER: z.any(),
-	// KV namespaces for different environments
-	LOCAL_KV_NAMESPACE: z.any(), // KVNamespace type
-	PRODUCTION_KV_NAMESPACE: z.any(), // KVNamespace type
-	STAGING_KV_NAMESPACE: z.any(), // KVNamespace type
+	KV_BETTER_AUTH: z.any(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

@@ -39,11 +39,7 @@ export function createBetterAuthConfig(
 	const isDevelopment = env(c).WORKER_ENV === 'development';
 
 	// Get the correct KV namespace based on environment
-	const kvNamespace = isDevelopment
-		? env(c).LOCAL_KV_NAMESPACE
-		: env(c).WORKER_ENV === 'production'
-			? env(c).PRODUCTION_KV_NAMESPACE
-			: env(c).STAGING_KV_NAMESPACE;
+	const kvNamespace = env(c).KV_BETTER_AUTH;
 
 	return {
 		baseURL: env(c).API_DOMAIN, // API URL

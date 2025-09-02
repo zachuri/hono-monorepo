@@ -13,8 +13,8 @@ name = "hono-monorepo-production"
 
 # Production KV namespace
 [[env.production.kv_namespaces]]
-binding = "PRODUCTION_KV_NAMESPACE"
-id = "your-production-kv-id-here" # deploy with cli and get id
+binding = "KV_BETTER_AUTH"  # Same binding name
+id = "8f8e49da86e94252b74a84c33f684c59" # `bunx wrangler kv namespace create KV_BETTER_AUTH_STAGING`
 
 [[env.production.routes]]
 pattern = "hono-monorepo-api.zachuri.com/*"
@@ -25,8 +25,8 @@ name = "hono-monorepo-staging"
 
 # Staging KV namespace
 [[env.staging.kv_namespaces]]
-binding = "STAGING_KV_NAMESPACE"
-id = "your-staging-kv-id-here" # deploy with cli and get id
+binding = "KV_BETTER_AUTH"  # Same binding name
+id = "e3dae129577647a6a921d32f520e4bda" # `bunx wrangler kv namespace create KV_BETTER_AUTH_PROD`
 
 [[env.staging.routes]]
 pattern = "hono-monorepo-staging-api.zachuri.com/*"
