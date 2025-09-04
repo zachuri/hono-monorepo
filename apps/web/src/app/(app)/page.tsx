@@ -1,58 +1,227 @@
 'use client';
 
 import { Button } from '@acme/ui/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@acme/ui/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@acme/ui/components/ui/tabs';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api.client';
 import { signOut, useSession } from '@/lib/auth.client';
 
+type GeolocationData = {
+	ip: string | null;
+	city: string | null;
+	country: string | null;
+	region: string | null;
+	regionCode: string | null;
+	timezone: string | null;
+	latitude: number | null;
+	longitude: number | null;
+	colo: string | null;
+	asn: number | null;
+	asOrganization: string | null;
+	continent: string | null;
+	postalCode: string | null;
+	metroCode: string | null;
+	isEUCountry: boolean | null;
+};
+
 export default function App() {
-  const router = useRouter();
-  const session = useSession();
+	const router = useRouter();
+	const session = useSession();
 
-  const {
-    data: test,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['hello'],
-    queryFn: async () => {
-      const response = await api.user.accounts.$get();
-      if (!response.ok) {
-        return null;
-      }
+	// Geolocation query
+	const {
+		data: geolocationData,
+		isLoading: isGeolocationLoading,
+		isError: isGeolocationError,
+	} = useQuery({
+		queryKey: ['geolocation'],
+		queryFn: async () => {
+			const response = await api.geolocation.$get();
+			if (!response.ok) {
+				throw new Error('Failed to fetch geolocation data');
+			}
+			return (await response.json()) as GeolocationData;
+		},
+	});
 
-      return await response.json();
-    },
-  });
+	// User accounts query
+	const {
+		data: userAccounts,
+		isLoading: isUserLoading,
+		isError: isUserError,
+	} = useQuery({
+		queryKey: ['user-accounts'],
+		queryFn: async () => {
+			const response = await api.user.accounts.$get();
+			if (!response.ok) {
+				throw new Error('Failed to fetch user accounts');
+			}
+			return await response.json();
+		},
+	});
 
-  const user = session.data?.user;
+	const user = session.data?.user;
 
-  // TODO: update use of useSession with useQueryClient
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      router.push('/sign-in');
-    } catch (error) {
-      console.error('Sign out failed', error);
-    }
-  };
+	const handleSignOut = async () => {
+		try {
+			await signOut();
+			router.push('/sign-in');
+		} catch (error) {
+			console.error('Sign out failed', error);
+		}
+	};
 
-  return (
-    <div className='flex flex-col items-center justify-center h-screen'>
-      {isLoading && <p>Loading</p>}
-      {isError && <p>User not found</p>}
-      {!isLoading && user && (
-        <div className='flex flex-col items-center justify-center gap-5'>
-          <h2 className='text-2xl'>Logged in as: {user.email}</h2>
-          {test && (
-            <p className='text-lg'>
-              Providers: {test.map(provider => provider.providerId).join(', ')}
-            </p>
-          )}
-          <Button onClick={handleSignOut}>Sign Out</Button>
-        </div>
-      )}
-    </div>
-  );
+	const renderGeolocationTab = () => (
+		<div className='space-y-4'>
+			<h3 className='text-xl font-semibold'>Your Location Information</h3>
+			{isGeolocationLoading && <p>Loading geolocation data...</p>}
+			{isGeolocationError && <p className='text-red-500'>Failed to load geolocation data</p>}
+			{geolocationData && (
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<Card>
+						<CardHeader>
+							<CardTitle>Location Details</CardTitle>
+						</CardHeader>
+						<CardContent className='space-y-2'>
+							<div>
+								<strong>IP Address:</strong> {geolocationData.ip || 'N/A'}
+							</div>
+							<div>
+								<strong>City:</strong> {geolocationData.city || 'N/A'}
+							</div>
+							<div>
+								<strong>Country:</strong> {geolocationData.country || 'N/A'}
+							</div>
+							<div>
+								<strong>Region:</strong> {geolocationData.region || 'N/A'}
+							</div>
+							<div>
+								<strong>Postal Code:</strong> {geolocationData.postalCode || 'N/A'}
+							</div>
+							<div>
+								<strong>Timezone:</strong> {geolocationData.timezone || 'N/A'}
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardHeader>
+							<CardTitle>Coordinates</CardTitle>
+						</CardHeader>
+						<CardContent className='space-y-2'>
+							<div>
+								<strong>Latitude:</strong> {geolocationData.latitude || 'N/A'}
+							</div>
+							<div>
+								<strong>Longitude:</strong> {geolocationData.longitude || 'N/A'}
+							</div>
+							<div>
+								<strong>Continent:</strong> {geolocationData.continent || 'N/A'}
+							</div>
+							<div>
+								<strong>EU Country:</strong> {geolocationData.isEUCountry ? 'Yes' : 'No'}
+							</div>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardHeader>
+							<CardTitle>Network Information</CardTitle>
+						</CardHeader>
+						<CardContent className='space-y-2'>
+							<div>
+								<strong>Colo:</strong> {geolocationData.colo || 'N/A'}
+							</div>
+							<div>
+								<strong>ASN:</strong> {geolocationData.asn || 'N/A'}
+							</div>
+							<div>
+								<strong>AS Organization:</strong> {geolocationData.asOrganization || 'N/A'}
+							</div>
+							<div>
+								<strong>Metro Code:</strong> {geolocationData.metroCode || 'N/A'}
+							</div>
+						</CardContent>
+					</Card>
+				</div>
+			)}
+		</div>
+	);
+
+	const renderUserTab = () => (
+		<div className='space-y-4'>
+			<h3 className='text-xl font-semibold'>Your Account Information</h3>
+			{isUserLoading && <p>Loading user data...</p>}
+			{isUserError && <p className='text-red-500'>Failed to load user data</p>}
+			{user && (
+				<div className='space-y-4'>
+					<Card>
+						<CardHeader>
+							<CardTitle>Profile Information</CardTitle>
+						</CardHeader>
+						<CardContent className='space-y-2'>
+							<div>
+								<strong>Email:</strong> {user.email}
+							</div>
+							<div>
+								<strong>Name:</strong> {user.name || 'N/A'}
+							</div>
+							<div>
+								<strong>ID:</strong> {user.id}
+							</div>
+						</CardContent>
+					</Card>
+
+					{userAccounts && (
+						<Card>
+							<CardHeader>
+								<CardTitle>Connected Accounts</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<div className='space-y-2'>
+									{userAccounts.length > 0 ? (
+										userAccounts.map(account => (
+											<div key={account.providerId} className='p-2 bg-gray-100 rounded'>
+												<strong>Provider:</strong> {account.providerId}
+											</div>
+										))
+									) : (
+										<p>No connected accounts</p>
+									)}
+								</div>
+							</CardContent>
+						</Card>
+					)}
+				</div>
+			)}
+		</div>
+	);
+
+	return (
+		<div className='flex flex-col items-center justify-center min-h-screen p-4'>
+			<div className='w-full max-w-4xl'>
+				<div className='flex justify-between items-center mb-6'>
+					<h1 className='text-3xl font-bold'>Dashboard</h1>
+					<Button onClick={handleSignOut}>Sign Out</Button>
+				</div>
+
+				<Tabs defaultValue='geolocation' className='w-full'>
+					<TabsList className='grid w-full grid-cols-2'>
+						<TabsTrigger value='geolocation'>Geolocation</TabsTrigger>
+						<TabsTrigger value='user'>User Info</TabsTrigger>
+					</TabsList>
+
+					<TabsContent value='geolocation' className='mt-6'>
+						{renderGeolocationTab()}
+					</TabsContent>
+
+					<TabsContent value='user' className='mt-6'>
+						{renderUserTab()}
+					</TabsContent>
+				</Tabs>
+			</div>
+		</div>
+	);
 }
