@@ -1,3 +1,4 @@
+import type { GeolocationService } from '@acme/api/lib/geolocation';
 import type { AppContext, AppOpenAPI } from '@acme/api/types/app-context';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { prettyJSON } from 'hono/pretty-json';
@@ -21,6 +22,37 @@ export function createRouter() {
 	});
 }
 
+// Inline geolocation middleware
+function geolocationMiddleware(c: any, next: () => Promise<void>) {
+	const cf = (c.req.raw as any).cf || {};
+	const ip = c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || null;
+
+	const geolocationService: GeolocationService = {
+		getGeolocation: () => ({
+			ip,
+			city: cf?.city || null,
+			country: cf?.country || null,
+			region: cf?.region || null,
+			regionCode: cf?.regionCode || null,
+			timezone: cf?.timezone || null,
+			latitude: cf?.latitude || null,
+			longitude: cf?.longitude || null,
+			colo: cf?.colo || null,
+			asn: cf?.asn || null,
+			asOrganization: cf?.asOrganization || null,
+			continent: cf?.continent || null,
+			postalCode: cf?.postalCode || null,
+			metroCode: cf?.metroCode || null,
+			isEUCountry: cf?.isEUCountry || null,
+		}),
+		getIPAddress: () => ip,
+		getCloudflareContext: () => ({ cf, ip }),
+	};
+
+	c.set('geolocation', geolocationService);
+	return next();
+}
+
 // Create app with all the middlwares
 export default function createApp() {
 	const app = createRouter();
@@ -36,6 +68,8 @@ export default function createApp() {
 			initializeBetterAuth(c);
 			return next();
 		})
+		// Add geolocation middleware
+		.use('*', geolocationMiddleware)
 		// Use CORS middleware for auth routes
 		// /auth/**  auth routes or * for all routes to have cors*/
 		.use('*', (c, next) => betterAuthCorsMiddleware(c)(c, next))
