@@ -1,4 +1,5 @@
 import type { Database } from '@acme/api/db';
+import type { GeolocationService } from '@acme/api/lib/geolocation';
 import type { BetterAuth } from '@acme/api/lib/middlewares/auth/initialize-better-auth';
 import type { Env } from '@acme/app/env/api';
 import type { OpenAPIHono, RouteConfig, RouteHandler } from '@hono/zod-openapi';
@@ -9,6 +10,7 @@ type Variables = {
 	user: User | null;
 	session: Session | null;
 	betterAuth: BetterAuth;
+	geolocation: GeolocationService;
 };
 
 export interface AppContext {

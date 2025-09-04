@@ -1,5 +1,29 @@
 # TODO
 
+## Better Auth setup
+
+- [ ] KV
+
+  - [x] kv storage cache with better auth
+  - [ ] doc of my findings
+  - [ ]
+
+- [ ] setup for jwt figure it out?
+
+- [x] geo location
+- [x] ip identifier
+
+# Other cool setup
+
+- [ ] sockets setup for testing later
+- [ ] expo
+
+## Project setup
+
+- [ ] maybe add nextra (blog)
+
+- [ ] ~~host next js on cloudflare~~
+
 - [x] project wil be name acme
 - [x] storybook for ui framework
 - [x] storybook setup docs for ui components
@@ -8,15 +32,3 @@
 - [x] biome linter setup
 - [x] CI/CD pipeline with github actions
 - [x] dev, staging, prod, env
-
-- [ ] sockets setup for testing later
-- [ ] update to token based auth instead of session
-- [ ] expo
-
-- [ ] ~~host next js on cloudflare~~
-
-- [ ] maybe add nextra (blog)
-
-- [ ] kv storage cache with better auth
-- [ ] geo location
-- [ ] ip identifier

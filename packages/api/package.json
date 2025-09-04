@@ -3,8 +3,8 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "wrangler dev",
-		"dev:remote": "wrangler dev --remote",
+		"dev": "wrangler dev --remote",
+		"dev:remote": "wrangler dev",
 		"validate": "biome .",
 		"lint": "bunx --bun biome lint --write .",
 		"lint:fix": "bunx --bun biome lint --write --unsafe .",
