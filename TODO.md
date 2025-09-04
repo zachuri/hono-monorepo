@@ -10,8 +10,8 @@
 
 - [ ] setup for jwt figure it out?
 
-- [ ] geo location
-- [ ] ip identifier
+- [x] geo location
+- [x] ip identifier
 
 # Other cool setup
 
