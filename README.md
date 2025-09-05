@@ -67,12 +67,12 @@ bun ui:add:component <component-name>
 graph TD
     A[Turborepo] --> B[Apps]
     A --> C[Packages]
-    B --> D[@acme/web]
-    B --> E[@acme/storybook]
-    C --> F[@acme/api]
-    C --> G[@acme/ui]
-    C --> H[@acme/app]
-    C --> I[@acme/tsconfig]
+    B --> D["@acme/web"]
+    B --> E["@acme/storybook"]
+    C --> F["@acme/api"]
+    C --> G["@acme/ui"]
+    C --> H["@acme/app"]
+    C --> I["@acme/tsconfig"]
 ```
 
 | App/Package       | Description                                                                                            |
