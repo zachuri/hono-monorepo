@@ -1,21 +1,45 @@
 # TODO
 
+## API
+
+- [ ] role based auth
+
+  - [ ] admin, user, developer
+    - [ ] admin/developer can view api /reference and /storybook
+
+- [ ] sockets setup for testing later
+
+## UI
+
+- [ ] host storybook on vercel
+  - ran into problems and remove
+  ```
+  {
+    "dependencies": {
+      "react": "^19.1.1",
+      "react-dom": "^19.1.1",
+      "next": "15.1.8",
+      "@acme/ui": "workspace:*"
+    },
+    "devDependencies": {
+      "@acme/web": "workspace:*",  // Move here
+      // ... rest of devDependencies
+    }
+  }
+  ```
+
 ## Better Auth setup
 
 - [ ] KV
 
   - [x] kv storage cache with better auth
   - [ ] doc of my findings
-  - [ ]
-
-- [ ] setup for jwt figure it out?
 
 - [x] geo location
 - [x] ip identifier
 
 # Other cool setup
 
-- [ ] sockets setup for testing later
 - [ ] expo
 
 ## Project setup

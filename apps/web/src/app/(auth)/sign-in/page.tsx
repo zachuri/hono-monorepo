@@ -14,19 +14,19 @@ export default function SignIn() {
 	const homePageUrl = process.env.NEXT_PUBLIC_APP_URL;
 
 	return (
-		<div className='flex items-center justify-center min-h-screen p-4'>
+		<div className='flex min-h-screen items-center justify-center p-4'>
 			<Card className='w-full max-w-md'>
 				<CardHeader className='text-center'>
-					<CardTitle className='text-2xl font-bold'>Welcome Back</CardTitle>
+					<CardTitle className='font-bold text-2xl'>Welcome Back</CardTitle>
 					<CardDescription>Choose your preferred sign-in method to continue</CardDescription>
 				</CardHeader>
 				<CardContent className='space-y-4'>
 					<Button
-						className='w-full flex items-center gap-3 h-12'
+						className='flex h-12 w-full items-center gap-3'
 						onClick={() => signIn.social({ provider: 'github', callbackURL: homePageUrl })}
 					>
 						<svg
-							className='w-5 h-5'
+							className='h-5 w-5'
 							role='img'
 							viewBox='0 0 24 24'
 							xmlns='http://www.w3.org/2000/svg'
@@ -41,7 +41,7 @@ export default function SignIn() {
 					</Button>
 
 					<Button
-						className='w-full flex items-center gap-3 h-12'
+						className='flex h-12 w-full items-center gap-3'
 						onClick={() =>
 							signIn.social({
 								provider: 'google',
@@ -50,7 +50,7 @@ export default function SignIn() {
 						}
 					>
 						<svg
-							className='w-5 h-5'
+							className='h-5 w-5'
 							role='img'
 							viewBox='0 0 24 24'
 							xmlns='http://www.w3.org/2000/svg'
@@ -65,7 +65,7 @@ export default function SignIn() {
 					</Button>
 
 					<Button
-						className='w-full flex items-center gap-3 h-12'
+						className='flex h-12 w-full items-center gap-3'
 						onClick={() =>
 							signIn.social({
 								provider: 'discord',
@@ -74,7 +74,7 @@ export default function SignIn() {
 						}
 					>
 						<svg
-							className='w-5 h-5'
+							className='h-5 w-5'
 							role='img'
 							viewBox='0 0 24 24'
 							xmlns='http://www.w3.org/2000/svg'

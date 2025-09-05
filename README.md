@@ -1,52 +1,62 @@
-# 🚀 Turborepo Starter with Next.js, Nextra, and shadcn/ui
+# 🚀 Hono Monorepo with Next.js and Cloudflare
 
+![Static Badge](https://img.shields.io/badge/Hono-4.9.4-blue?link=https%3A%2F%2Fhono.dev)
+![Static Badge](https://img.shields.io/badge/Next.js-15.1.8-black?link=https%3A%2F%2Fnextjs.org)
 ![Static Badge](https://img.shields.io/badge/shadcn%2Fui-0.8.0-blue?link=https%3A%2F%2Fgithub.com%2Fshadcn%2Fui)
 
-[![CI](https://github.com/gmickel/turborepo-shadcn-nextjs/actions/workflows/ci.yml/badge.svg)](https://github.com/gmickel/turborepo-shadcn-nextjs/actions/workflows/ci.yml)
-[![Known Vulnerabilities](https://snyk.io/test/github/gmickel/turborepo-shadcn-nextjs/badge.svg)](https://snyk.io/test/github/gmickel/turborepo-shadcn-nextjs)
-[![License](https://img.shields.io/github/license/gmickel/turborepo-shadcn-nextjs.svg)](https://github.com/gmickel/turborepo-shadcn-nextjs/blob/main/LICENSE)
+![Bun](https://img.shields.io/badge/Bun-1.1.17-000000.svg?&logo=bun&logoColor=white)
 
-![Bun](https://img.shields.io/badge/Bun-%23000000.svg?&logo=bun&logoColor=white)
+A modern full-stack monorepo featuring Hono API, Next.js frontend, and a shared shadcn/ui component library, powered by Bun, Vitest, Playwright, Storybook, and Biome.
 
-A powerful monorepo starter template featuring Next.js, Nextra, and a shared pre-configured shadcn/ui package, powered by Bun, Vitest, Playwright, Storybook, and Biome.
+## 🌐 Live Demo
+
+- **Web App**: [http://hono-monorepo-app.zachuri.com/](http://hono-monorepo-app.zachuri.com/)
+- **API**: [http://hono-monorepo-api.zachuri.com/](http://hono-monorepo-api.zachuri.com/)
+
+> 🎉 **Try it out!** The live demo showcases authentication with GitHub, Google, and Discord providers.
 
 - [🌟 Features](#-features)
 - [🚀 Quick Start](#-quick-start)
 - [📦 What's Inside?](#-whats-inside)
 - [🛠️ Useful Commands](#️-useful-commands)
 - [🧰 Development Tools](#-development-tools)
+- [🔐 Authentication](#-authentication)
+- [🗄️ Database](#️-database)
 - [🚀 Deployment](#-deployment)
 - [🔗 Useful Links](#-useful-links)
-- [👥 Contributors](#-contributors)
 
 ## 🌟 Features
 
 - 📦 Monorepo structure with Turborepo for efficient build system and caching
-- ⚡ Next.js for fast, server-side rendered React applications
-- 📚 Nextra for easy-to-create documentation sites
+- ⚡ Next.js 15 with App Router for fast, server-side rendered React applications
+- 🔥 Hono API with Cloudflare Workers for high-performance serverless functions
 - 🎨 shadcn/ui for beautiful, customizable UI components
+- 🔐 Better Auth for modern authentication with multiple providers
+- 🗄️ Drizzle ORM with Neon Database for type-safe database operations
 - 🐰 Bun as a fast, all-in-one JavaScript runtime
 - 🧪 Vitest for speedy unit testing
 - 🎭 Playwright for reliable end-to-end testing
 - 📖 Storybook for isolated component development and documentation
 - 🌿 Biome for fast, opinionated linting and formatting
-- 🔄 Automated dependency management with Dependabot
-- 👥 Automated contributor recognition
+- 🔄 Git hooks with Lefthook for automated code quality
 - 🚀 CI/CD setup with GitHub Actions
 
 ## 🚀 Quick Start
 
 ```sh
 # Clone the repository
-git clone https://github.com/gmickel/turborepo-shadcn-nextjs.git
+git clone <your-repo-url>
 
 # Navigate to the project directory
-cd turborepo-shadcn-nextjs
+cd hono-monorepo
 
 # Install dependencies
 bun install
 
-# Start development server
+# Set up environment variables
+cp packages/api/.dev.vars.example packages/api/.dev.vars.local
+
+# Start development servers
 bun dev
 ```
 
@@ -64,19 +74,22 @@ bun ui:add:component <component-name>
 graph TD
     A[Turborepo] --> B[Apps]
     A --> C[Packages]
-    B --> E[@web]
-    B --> F[@storybook]
-    C --> G[@acme/ui]
-    C --> H[@utils]
-    C --> I[@acme/tsconfig]
+    B --> D["@acme/web"]
+    B --> E["@acme/storybook"]
+    C --> F["@acme/api"]
+    C --> G["@acme/ui"]
+    C --> H["@acme/app"]
+    C --> I["@acme/tsconfig"]
 ```
 
-| App/Package      | Description                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------------- |
-| `@web`           | Main Next.js web application 🌐                                                          |
-| `@acme/ui`       | Core React components and design system shared by applications (powered by shadcn/ui) 🎨 |
-| `@utils`         | Shared React utilities 🛠️                                                                |
-| `@acme/tsconfig` | Shared `tsconfig.json` configurations 🛡️                                                 |
+| App/Package       | Description                                                                                            |
+| ----------------- | ------------------------------------------------------------------------------------------------------ |
+| `@acme/web`       | Next.js web application with App Router 🌐                                                             |
+| `@acme/api`       | Hono API with Cloudflare Workers and OpenAPI documentation 🔥 ([API README](./packages/api/README.md)) |
+| `@acme/ui`        | Core React components and design system shared by applications (powered by shadcn/ui) 🎨               |
+| `@acme/app`       | Shared app utilities and providers 🛠️                                                                  |
+| `@acme/storybook` | Storybook for component development and documentation 📚                                               |
+| `@acme/tsconfig`  | Shared `tsconfig.json` configurations 🛡️                                                               |
 
 Each package and app is 100% [TypeScript](https://www.typescriptlang.org/). 💪
 
@@ -90,10 +103,11 @@ This Turborepo has some additional tools already set up for you:
 - [Playwright](https://playwright.dev/) for end-to-end tests 🧪
 - [Changesets](https://github.com/changesets/changesets) for managing versioning, changelogs, and publishing 📝
 - [Storybook](https://storybook.js.org/) for component development and documentation 📚
+- [Lefthook](https://github.com/evilmartians/lefthook) for Git hooks 🔗
 
 ### Storybook 📚
 
-This Turborepo includes Storybook for component development and documentation. Storybook is set up for both the `@web` and `@acme/ui` packages, allowing the development and showcasing of components from both your main application and your shared UI library.
+This Turborepo includes Storybook for component development and documentation. Storybook is set up for both the `@acme/web` and `@acme/ui` packages, allowing the development and showcasing of components from both your main application and your shared UI library.
 
 To run Storybook:
 
@@ -114,32 +128,31 @@ Storybook is configured to find stories in the following locations:
 
 This configuration allows you to write stories for components in both your web application and your shared UI library.
 
-#### Storybook Addons
-
-This setup includes several useful Storybook addons:
-
-- `@storybook/addon-links`: For linking between stories
-- `@storybook/addon-essentials`: A curated set of addons for a great developer experience
-- `@storybook/addon-onboarding`: For onboarding new users
-- `@storybook/addon-interactions`: For testing component interactions
-- `@storybook/addon-themes`: For theme switching in Storybook
-- `@storybook/addon-styling-webpack`: For handling CSS and PostCSS in Storybook
-
-### Useful commands 🤖
+## 🛠️ Useful Commands
 
 - `bun build` - Build all apps and packages
 - `bun dev` - Develop all apps and packages
-- `bun dev:ui` - Develop all apps and packages and display the output in Turbo's new experimental UI
 - `bun test` - Run all tests with vitest
 - `bun test:cov` - Run all unit tests with vitest and generate a coverage report
 - `bun test:cov:ui` - Run all unit tests with vitest and display the vitest UI
 - `bun test:e2e` - Run all end-to-end tests with playwright
 - `bun lint` - Lint and format all packages
 - `bun lint:fix` - Lint, format, and fix all packages
-- `bun changeset` - Generate a changeset 🧑‍🔧 - WIP
-- `bun clean` - Clean up all `node_modules` and `dist` folders (runs each package's clean script)
+- `bun changeset` - Generate a changeset 🧑‍🔧
+- `bun clean` - Clean up all `node_modules` and `dist` folders
 - `bun ui:add:component` - Add a shadcn/ui component to the `@acme/ui` package
 - `bun storybook` - Run Storybook for component development and documentation
+
+### API Commands
+
+> 📖 **API Documentation**: For detailed API setup, environment configuration, and Cloudflare deployment instructions, see the [API README](./packages/api/README.md).
+
+- `bun run dev --filter=@acme/api` - Start API development server
+- `bun run deploy:staging --filter=@acme/api` - Deploy API to staging
+- `bun run deploy:production --filter=@acme/api` - Deploy API to production
+- `bun run db:generate --filter=@acme/api` - Generate database migrations
+- `bun run db:migrate --filter=@acme/api` - Run database migrations
+- `bun run db:studio --filter=@acme/api` - Open Drizzle Studio
 
 ### Add a new app or package 📦
 
@@ -157,114 +170,52 @@ You can copy an existing app or package with:
 bun turbo gen workspace [--name <app-name>] --copy
 ```
 
-You will be prompted to choose the name and workspace type (app or package) of the new app and which app or package to copy.
+You will be prompted to choose the name and workspace type of the new app and which app or package to copy.
 
 > [! NOTE]
 > Remember to run `bun install` after copying an app. ⚠️
 
-### CI 🤖
+## 🔐 Authentication
 
-[![CI](https://github.com/gmickel/turborepo-shadcn-nextjs/actions/workflows/ci.yml/badge.svg)](https://github.com/gmickel/turborepo-shadcn-nextjs/actions/workflows/ci.yml)
+This project uses [Better Auth](https://better-auth.com/) for authentication, which provides:
 
-This Turborepo uses [GitHub Actions](https://github.com/features/actions) for CI. 🤖
+- Multiple authentication providers (OAuth, email/password, etc.)
+- Session management
+- Type-safe authentication
+- Built-in security features
 
-It comes preconfigured with the following workflow that runs on every push or pull request to the `main` branch:
+### Authentication Setup
 
-1. **Setup**: Checks out the code and sets up Bun.
-2. **Install**: Installs all dependencies using Bun.
-3. **Build**: Builds all apps and packages in the monorepo.
-4. **Unit Tests**: Runs all unit tests using [Vitest](https://vitest.dev/).
-5. **E2E Tests**: Installs Playwright browsers and runs end-to-end tests using [Playwright](https://playwright.dev/).
-6. **Lint**: Performs linting and formatting checks using [Biome](https://biomejs.dev/).
+1. Configure your authentication providers in the API
+2. Set up the required environment variables
+3. The web app automatically connects to the API for authentication
 
-### CI environment variables (Supabase)
+## 🗄️ Database
 
-The web app requires Supabase env vars at build time. Configure them in GitHub Actions:
+This project uses:
 
-- Required repository secrets:
-  - NEXT_PUBLIC_API
-- Optional repository variable:
-  - NEXT_PUBLIC_URL (defaults to `http://localhost:3000` in CI if not set)
+- **Drizzle ORM** for type-safe database operations
+- **Neon Database** as the PostgreSQL provider
+- **Database migrations** with Drizzle Kit
+- **Drizzle Studio** for database management
 
-Add these in:
+### Database Commands
 
-- Settings → Secrets and variables → Actions → Secrets → New repository secret
-- Settings → Secrets and variables → Actions → Variables (for non-secret values)
+```sh
+# Generate migrations
+bun run db:generate --filter=@acme/api
 
-The workflow reads them like this:
+# Run migrations
+bun run db:migrate --filter=@acme/api
 
-```yaml
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      NEXT_PUBLIC_URL: ${{ vars.NEXT_PUBLIC_APP_URL || 'http://localhost:3000' }}
-      NEXT_PUBLIC_API: ${{ vars.NEXT_PUBLIC_API_URL || 'http://localhost:8787' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - name: Install dependencies
-        run: bun install
-      - name: Build
-        run: bun run build
-      - name: Run unit tests
-        run: bun run test
-      - name: Lint
-        run: bun run lint
+# Open Drizzle Studio
+bun run db:studio --filter=@acme/api
+
+# Seed the database
+bun run db:seed --filter=@acme/api
 ```
 
-Notes:
-
-- Secrets are not available to workflows triggered from forks. Consider:
-  - Skipping builds for fork PRs,
-  - Using non-secret repo Variables for fork builds (e.g. sandbox keys),
-  - Or `pull_request_target` with caution.
-
-### Automated Dependency Management & Contributor Recognition 🤖
-
-This template includes some useful automation tools:
-
-#### 1. Dependabot Configuration 🔄
-
-Keeps dependencies up-to-date automatically with daily checks and update rules.
-
-[View Dependabot Config](.github/dependabot.yml)
-
-#### 2. Auto-merge for Dependabot PRs 🔀
-
-Can automatically merges patch updates from Dependabot to reduce manual work.
-
-[View Auto-merge Workflow](.github/workflows/auto-merge-dependabot.yml)
-
-For the auto-merge workflow:
-
-- Go to your repository's Settings > Actions > General.
-- Under "Workflow permissions", select "Read and write permissions".
-- Check "Allow GitHub Actions to create and approve pull requests".
-- Save the changes.
-- Optionally, create a Personal Access Token (PAT) with `repo` scope and add it as a repository secret named `GITHUB_TOKEN` for enhanced security.
-
-#### 3. Automated Contributors List 🙌
-
-Maintains an up-to-date list of contributors in your README.
-
-[View Contributors Workflow](.github/workflows/contributors.yml)
-
-### 🚀 Getting Started
-
-1. Dependabot is active out-of-the-box. Review and adjust the config as needed.
-2. Ensure proper permissions for the auto-merge workflow.
-3. To read more about the contributors list, see the [contributors-readme-action](https://github.com/akhilmhdh/contributors-readme-action) README.
-
-## Versioning and Publishing packages 📦
-
-🧑‍🔧 WIP
-
-For more information, refer to the official [Changesets documentation](https://github.com/changesets/changesets/blob/main/docs/automating-changesets.md).
-
-## Deployment 🚀
+## 🚀 Deployment
 
 This Turborepo is set up for easy deployment of its various applications.
 
@@ -300,38 +251,6 @@ DATABASE_URL=           # Database connection string
 # Add other API-specific variables as needed
 ```
 
-#### Vercel Setup
-
-1. **Create Environment Branches**
-
-   - `main` branch → Production deployment
-   - `staging` branch → Preview deployment
-
-2. **Configure Environment Variables in Vercel**
-
-   **Production (main branch):**
-
-   - Go to your Vercel project settings
-   - Navigate to Environment Variables
-   - Add the required variables for production
-
-   **Preview (staging branch):**
-
-   - Same location, but set for Preview environment
-   - Use staging-specific values
-
-3. **Environment Variable Mapping**
-
-   ```bash
-   # Production
-   NEXT_PUBLIC_APP_URL=https://yourdomain.com
-   NEXT_PUBLIC_API_URL=https://api.yourdomain.com
-
-   # Staging
-   NEXT_PUBLIC_APP_URL=https://staging.yourdomain.com
-   NEXT_PUBLIC_API_URL=https://staging-api.yourdomain.com
-   ```
-
 #### API Deployment (Cloudflare Workers)
 
 The `packages/api` uses Wrangler for deployment to Cloudflare Workers.
@@ -340,16 +259,16 @@ The `packages/api` uses Wrangler for deployment to Cloudflare Workers.
 
 ```bash
 # Staging deployment
-bun run deploy:staging
+bun run deploy:staging --filter=@acme/api
 
 # Production deployment
-bun run deploy:production
+bun run deploy:production --filter=@acme/api
 
 # Push secrets to staging
-bun run push:secret:staging
+bun run push:secret:staging --filter=@acme/api
 
 # Push secrets to production
-bun run push:secret:production
+bun run push:secret:production --filter=@acme/api
 ```
 
 **Deployment Process:**
@@ -358,49 +277,35 @@ bun run push:secret:production
 2. Run the appropriate deployment command
 3. Secrets are automatically pushed to the corresponding environment
 
-**Environment-Specific Configuration:**
+### Web App Deployment
 
-- `wrangler.toml` contains environment-specific settings
-- Each environment can have different configurations (e.g., different worker names, routes)
-- Secrets are managed per environment for security
+The `apps/web` can be deployed to Vercel or any other Next.js hosting platform.
 
-### Vercel Deployment 🌐
+**Vercel Deployment:**
 
-The `docs` and `web` apps can be deployed to Vercel without any additional configuration. This allows for quick and easy deployment of your Next.js applications.
-
-#### Test Deployments
-
-You can view the test deployments for these apps:
-
-- `apps/web`: [https://turborepo-shadcn-nextjs-web.vercel.app/](https://turborepo-shadcn-nextjs-web.vercel.app/)
-- `apps/docs`: [https://turborepo-shadcn-nextjs-docs.vercel.app/](https://turborepo-shadcn-nextjs-docs.vercel.app/)
+1. Connect your repository to Vercel
+2. Set up environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
 ### Storybook Deployment 📚
 
-The `apps/storybook` is automatically deployed to GitHub Pages using a custom workflow.
+The `apps/storybook` can be deployed to any static hosting platform or GitHub Pages.
 
-- **Workflow File**: You can find the deployment workflow at `.github/workflows/storybook-deploy.yml`
-- **Deployment URL**: The deployed Storybook can be accessed at [https://gmickel.github.io/turborepo-shadcn-nextjs/](https://gmickel.github.io/turborepo-shadcn-nextjs/)
-
-## Useful Links and Thanks 🙏
+## 🔗 Useful Links
 
 ### Build Tools and Configuration
 
 - [Turborepo Documentation](https://turbo.build/repo/docs)
-  - [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-  - [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-  - [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-  - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-  - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-  - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
 - [Bun Documentation](https://bun.sh/docs)
 - [Biome Documentation](https://biomejs.dev/guides/getting-started/)
 
 ### Frameworks and Libraries
 
 - [Next.js Documentation](https://nextjs.org/docs)
-- [Nextra Documentation](https://nextra.site/docs)
+- [Hono Documentation](https://hono.dev/)
+- [Better Auth Documentation](https://better-auth.com/)
 - [shadcn/ui Documentation](https://ui.shadcn.com/docs)
+- [Drizzle ORM Documentation](https://orm.drizzle.team/)
 
 ### Testing Tools
 
@@ -411,23 +316,16 @@ The `apps/storybook` is automatically deployed to GitHub Pages using a custom wo
 
 - [Storybook Documentation](https://storybook.js.org/docs)
 - [Changesets Documentation](https://github.com/changesets/changesets)
+- [Lefthook Documentation](https://github.com/evilmartians/lefthook)
 
-## Contributors 👨‍💻
+## 🤝 Contributing
 
-<!-- readme: collaborators, contributors -start -->
-<table>
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-    <tbody>
-    	<tr>
-            <td align="center">
-                <a href="https://github.com/gmickel">
-                    <img src="https://avatars.githubusercontent.com/u/139907?v=4" width="100;" alt="gmickel"/>
-                    <br />
-                    <sub><b>Gordon Mickel</b></sub>
-                </a>
-            </td>
-    	</tr>
-    <tbody>
+## 📄 License
 
-</table>
-<!-- readme: collaborators, contributors -end -->
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
