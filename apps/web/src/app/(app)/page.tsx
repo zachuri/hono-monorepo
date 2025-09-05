@@ -75,11 +75,11 @@ export default function App() {
 
 	const renderGeolocationTab = () => (
 		<div className='space-y-4'>
-			<h3 className='text-xl font-semibold'>Your Location Information</h3>
+			<h3 className='font-semibold text-xl'>Your Location Information</h3>
 			{isGeolocationLoading && <p>Loading geolocation data...</p>}
 			{isGeolocationError && <p className='text-red-500'>Failed to load geolocation data</p>}
 			{geolocationData && (
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+				<div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
 					<Card>
 						<CardHeader>
 							<CardTitle>Location Details</CardTitle>
@@ -152,7 +152,7 @@ export default function App() {
 
 	const renderUserTab = () => (
 		<div className='space-y-4'>
-			<h3 className='text-xl font-semibold'>Your Account Information</h3>
+			<h3 className='font-semibold text-xl'>Your Account Information</h3>
 			{isUserLoading && <p>Loading user data...</p>}
 			{isUserError && <p className='text-red-500'>Failed to load user data</p>}
 			{user && (
@@ -183,7 +183,7 @@ export default function App() {
 								<div className='space-y-2'>
 									{userAccounts.length > 0 ? (
 										userAccounts.map(account => (
-											<div key={account.providerId} className='p-2 bg-gray-100 rounded'>
+											<div key={account.providerId} className='rounded bg-gray-100 p-2'>
 												<strong>Provider:</strong> {account.providerId}
 											</div>
 										))
@@ -200,10 +200,10 @@ export default function App() {
 	);
 
 	return (
-		<div className='flex flex-col items-center justify-center min-h-screen p-4'>
+		<div className='flex min-h-screen flex-col items-center justify-center p-4'>
 			<div className='w-full max-w-4xl'>
-				<div className='flex justify-between items-center mb-6'>
-					<h1 className='text-3xl font-bold'>Dashboard</h1>
+				<div className='mb-6 flex items-center justify-between'>
+					<h1 className='font-bold text-3xl'>Dashboard</h1>
 					<Button onClick={handleSignOut}>Sign Out</Button>
 				</div>
 

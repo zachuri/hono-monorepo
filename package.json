@@ -27,7 +27,7 @@
 		"ui:add:component": "turbo ui:add --filter=@acme/ui --",
 		"prepare": "lefthook install",
 		"storybook": "storybook dev -p 6006",
-		"build:storybook": "turbo build --filter=@storybook",
+		"build:storybook": "turbo build --filter=@acme/storybook",
 		"test": "turbo test",
 		"test:build": "turbo test:with-build",
 		"test:e2e": "turbo test:e2e",
