@@ -8,6 +8,13 @@
 
 A modern full-stack monorepo featuring Hono API, Next.js frontend, and a shared shadcn/ui component library, powered by Bun, Vitest, Playwright, Storybook, and Biome.
 
+## 🌐 Live Demo
+
+- **Web App**: [http://hono-monorepo-app.zachuri.com/](http://hono-monorepo-app.zachuri.com/)
+- **API**: [http://hono-monorepo-api.zachuri.com/](http://hono-monorepo-api.zachuri.com/)
+
+> 🎉 **Try it out!** The live demo showcases authentication with GitHub, Google, and Discord providers.
+
 - [🌟 Features](#-features)
 - [🚀 Quick Start](#-quick-start)
 - [📦 What's Inside?](#-whats-inside)
