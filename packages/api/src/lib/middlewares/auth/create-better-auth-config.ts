@@ -1,11 +1,12 @@
 import type { Database } from '@acme/api/db';
 import * as schema from '@acme/api/db/schemas';
+import { extractDomain } from '@acme/api/lib/utils/extractDomain';
 import type { AppContext } from '@acme/api/types/app-context';
 import type { IncomingRequestCfProperties } from '@cloudflare/workers-types';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { admin, customSession } from 'better-auth/plugins';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
-import { extractDomain } from '../../extractDomain';
 
 const enabledProviders = ['discord', 'google', 'github'];
 
@@ -107,6 +108,37 @@ export function createBetterAuthConfig(
 		rateLimit: {
 			window: 10, // time window in seconds
 			max: 100, // max requests in the window
+		},
+		plugins: [admin()],
+		user: {
+			additionalFields: {
+				role: {
+					type: 'string',
+					required: false,
+					defaultValue: 'user',
+				},
+				banned: {
+					type: 'boolean',
+					required: false,
+					defaultValue: false,
+				},
+				banReason: {
+					type: 'string',
+					required: false,
+				},
+				banExpires: {
+					type: 'date',
+					required: false,
+				},
+			},
+		},
+		session: {
+			additionalFields: {
+				impersonatedBy: {
+					type: 'string',
+					required: false,
+				},
+			},
 		},
 	};
 }

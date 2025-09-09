@@ -1,14 +1,17 @@
 import type { Database } from '@acme/api/db';
 import type { GeolocationService } from '@acme/api/lib/geolocation';
-import type { BetterAuth } from '@acme/api/lib/middlewares/auth/initialize-better-auth';
+import type {
+	BetterAuth,
+	Session,
+	User,
+} from '@acme/api/lib/middlewares/auth/initialize-better-auth';
 import type { Env } from '@acme/app/env/api';
 import type { OpenAPIHono, RouteConfig, RouteHandler } from '@hono/zod-openapi';
-import type { Session, User } from '../db/tables/auth';
 
 type Variables = {
 	db: Database;
-	user: User | null;
-	session: Session | null;
+	user: User;
+	session: Session;
 	betterAuth: BetterAuth;
 	geolocation: GeolocationService;
 };

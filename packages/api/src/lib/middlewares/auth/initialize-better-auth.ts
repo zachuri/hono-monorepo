@@ -1,9 +1,9 @@
+import createBetterAuthConfig from '@acme/api/lib/middlewares/auth/create-better-auth-config';
+import { extractDomain } from '@acme/api/lib/utils/extractDomain';
 import type { AppContext } from '@acme/api/types/app-context';
-import { betterAuth } from 'better-auth';
+import { type BetterAuthOptions, betterAuth } from 'better-auth';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
-import { extractDomain } from '../../extractDomain';
-import createBetterAuthConfig from './create-better-auth-config';
 
 /**
  * Initializes BetterAuth and stores it in the context.
@@ -33,7 +33,7 @@ export const initializeBetterAuth = (c: Context<AppContext>) => {
 				domain: isDevelopment ? undefined : extractDomain(env(c).WEB_DOMAIN), // Use env var for frontend domain
 			},
 		},
-	});
+	} as BetterAuthOptions);
 	c.set('betterAuth', auth);
 	return auth;
 };
@@ -42,3 +42,6 @@ export const initializeBetterAuth = (c: Context<AppContext>) => {
  * Type definition for the Auth object returned by BetterAuth.
  */
 export type BetterAuth = ReturnType<typeof betterAuth>;
+// Infer types from the auth instance
+export type Session = BetterAuth['$Infer']['Session'];
+export type User = BetterAuth['$Infer']['Session']['user'];

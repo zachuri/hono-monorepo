@@ -21,33 +21,11 @@ export async function handleSessionMiddleware(c: Context<AppContext>, next: () =
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
 	if (!session) {
-		c.set('user', null);
-		c.set('session', null);
-
 		return next();
 	}
 
-	const user = {
-		...session.user,
-		image: session.user.image ?? null,
-	};
-
-	const sessionData = {
-		...session.session,
-		ipAddress: session.session.ipAddress ?? null,
-		userAgent: session.session.userAgent ?? null,
-	};
-
-	c.set('user', user);
-	c.set('session', sessionData);
-
-	// EXAMPLE OF GETTING GEOLOCATION/IP ADDRESS DATA
-	const geolocation = c.get('geolocation');
-	const data = geolocation.getGeolocation();
-	const ip = geolocation.getIPAddress();
-
-	console.log('data', data);
-	console.log('ip', ip);
+	c.set('user', session.user);
+	c.set('session', session);
 
 	return next();
 }

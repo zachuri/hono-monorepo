@@ -1,10 +1,10 @@
-import { generateZodErrorMessage } from '@acme/api/lib/zod';
+import { generateZodErrorMessage } from '@acme/api/lib/utils/zod';
 import type { ErrorHandler } from 'hono';
 import type { ContentfulStatusCode, StatusCode } from 'hono/utils/http-status';
 import httpStatus from 'http-status';
 import type { Toucan } from 'toucan-js';
 import { ZodError } from 'zod';
-import { INTERNAL_SERVER_ERROR, OK } from '../http-status-codes';
+import { INTERNAL_SERVER_ERROR, OK } from '../utils/http-status-codes';
 
 const genericJSONErrMsg = 'Unexpected end of JSON input';
 

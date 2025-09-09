@@ -1,5 +1,5 @@
-import * as HttpStatusCodes from '@acme/api/lib/http-status-codes';
-import * as HttpStatusPhrases from '@acme/api/lib/http-status-phrases';
+import * as HttpStatusCodes from '@acme/api/lib/utils/http-status-codes';
+import * as HttpStatusPhrases from '@acme/api/lib/utils/http-status-phrases';
 import type { AppContext } from '@acme/api/types/app-context';
 import type { Context } from 'hono';
 import { env } from 'hono/adapter';
@@ -20,24 +20,24 @@ import { cors } from 'hono/cors';
  * @param credentials - Whether credentials are supported in CORS requests
  */
 export function betterAuthCorsMiddleware(c: Context<AppContext>) {
-  return cors({
-    origin: [
-      env(c).WEB_DOMAIN || 'http://localhost:3000', // Use env var for frontend domain
-      env(c).API_DOMAIN || 'http://localhost:8787', // and backend
-    ],
-    allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'OPTIONS'],
-    exposeHeaders: ['Content-Length'],
-    maxAge: 600,
-    credentials: true, // Required for cookies to work cross-origin
-  });
+	return cors({
+		origin: [
+			env(c).WEB_DOMAIN || 'http://localhost:3000', // Use env var for frontend domain
+			env(c).API_DOMAIN || 'http://localhost:8787', // and backend
+		],
+		allowHeaders: ['Content-Type', 'Authorization'],
+		allowMethods: ['POST', 'GET', 'OPTIONS'],
+		exposeHeaders: ['Content-Length'],
+		maxAge: 600,
+		credentials: true, // Required for cookies to work cross-origin
+	});
 }
 
 export async function requireAuth(c: Context<AppContext>, next: () => Promise<void>) {
-  const user = c.get('user');
+	const user = c.get('user');
 
-  if (!user) {
-    return c.json({ error: HttpStatusPhrases.UNAUTHORIZED }, HttpStatusCodes.UNAUTHORIZED);
-  }
-  await next();
+	if (!user) {
+		return c.json({ error: HttpStatusPhrases.UNAUTHORIZED }, HttpStatusCodes.UNAUTHORIZED);
+	}
+	await next();
 }

@@ -1,9 +1,3 @@
-CREATE TABLE "tasks" (
-	"id" text PRIMARY KEY NOT NULL,
-	"title" text,
-	"content" text
-);
---> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -28,6 +22,7 @@ CREATE TABLE "session" (
 	"updated_at" timestamp NOT NULL,
 	"ip_address" text,
 	"user_agent" text,
+	"impersonated_by" text,
 	"user_id" text NOT NULL,
 	CONSTRAINT "session_token_unique" UNIQUE("token")
 );
@@ -38,6 +33,10 @@ CREATE TABLE "user" (
 	"email" text NOT NULL,
 	"email_verified" boolean NOT NULL,
 	"image" text,
+	"role" text DEFAULT 'user',
+	"banned" boolean,
+	"ban_reason" text,
+	"ban_expires" timestamp,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL,
 	CONSTRAINT "user_email_unique" UNIQUE("email")

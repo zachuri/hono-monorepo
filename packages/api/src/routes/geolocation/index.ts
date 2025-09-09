@@ -1,4 +1,4 @@
-import { createRouter } from '@acme/api/lib/create-app';
+import { createRouter } from '@acme/api/lib/utils/create-app';
 import exampleUsageRoute, { exampleUsageHandler } from './example-usage.route';
 import geolocationRoute, { geolocationHandler } from './geolocation.route';
 

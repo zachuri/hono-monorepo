@@ -3,16 +3,16 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { timing } from 'hono/timing';
-import { initializeDrizzleNeonDB } from '../db';
-import { notFound, onError } from './middlewares';
+import { initializeDrizzleNeonDB } from '../../db';
+import { notFound, onError } from '../middlewares';
 import {
 	betterAuthCorsMiddleware,
 	handleSessionMiddleware,
 	initializeBetterAuth,
 	requireAuth,
-} from './middlewares/auth';
-import { geolocationMiddleware } from './middlewares/geolocation-middleware';
-import { defaultHook } from './openapi';
+} from '../middlewares/auth';
+import { geolocationMiddleware } from '../middlewares/geolocation-middleware';
+import { defaultHook } from '../openapi';
 
 // Router for OPENAPI
 export function createRouter() {
