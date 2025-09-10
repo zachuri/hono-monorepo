@@ -8,6 +8,8 @@
     - [ ] admin/developer can view api /reference and /storybook
 
 - [ ] sockets setup for testing later
+- [ ] need to fix type safety bettern client and server
+  - its able to fetch the updated data but cant find the types throwing an error
 
 ## UI
 

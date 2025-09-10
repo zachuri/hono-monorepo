@@ -1,12 +1,13 @@
 'use client';
 
+import type { User } from '@acme/api/db/schemas';
 import { Button } from '@acme/ui/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@acme/ui/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@acme/ui/components/ui/tabs';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api.client';
-import { signOut, useSession } from '@/lib/auth.client';
+import { authClient, signOut, useSession } from '@/lib/auth.client';
 
 type GeolocationData = {
 	ip: string | null;
@@ -62,7 +63,9 @@ export default function App() {
 		},
 	});
 
-	const user = session.data?.user;
+	const user = session.data?.user as User;
+
+	console.log('USER ADMIN DATA', user);
 
 	const handleSignOut = async () => {
 		try {
@@ -170,6 +173,9 @@ export default function App() {
 							</div>
 							<div>
 								<strong>ID:</strong> {user.id}
+							</div>
+							<div>
+								<strong>Role:</strong> {user.role || 'N/A'}
 							</div>
 						</CardContent>
 					</Card>
