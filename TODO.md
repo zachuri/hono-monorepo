@@ -10,6 +10,8 @@
 - [ ] sockets setup for testing later
 - [ ] need to fix type safety bettern client and server
   - its able to fetch the updated data but cant find the types throwing an error
+  - need to fix types some more, need to export auth config but its embeddeed in the hono
+  - will try a nodejs compatibility version
 
 ## UI
 

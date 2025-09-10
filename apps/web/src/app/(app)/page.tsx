@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@acme/ui/components/ui
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api.client';
-import { authClient, signOut, useSession } from '@/lib/auth.client';
+import { signOut, useSession } from '@/lib/auth.client';
 
 type GeolocationData = {
 	ip: string | null;

@@ -1,9 +1,10 @@
 // migrate.ts
+
+import fs from 'node:fs';
 import { neon } from '@neondatabase/serverless';
 import { config } from 'dotenv';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { migrate } from 'drizzle-orm/neon-http/migrator';
-import fs from 'fs';
 
 // Check if .dev.vars exists
 const envPath = '.env';
