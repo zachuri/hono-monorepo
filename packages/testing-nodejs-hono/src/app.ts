@@ -5,6 +5,7 @@ import { secureHeaders } from 'hono/secure-headers';
 import { timing } from 'hono/timing';
 import { createAuth } from './auth';
 import type { AppContext } from './lib/app-context';
+import { authCorsMiddleware } from './middleware/auth-cors.middleware';
 import notFound from './middleware/not-found';
 import onError from './middleware/on-error';
 import { sessionMiddleware } from './middleware/session.middleware';
@@ -16,17 +17,7 @@ app
 	.use('*', secureHeaders())
 	.use('*', timing())
 	// CORS configuration for auth routes
-	.use(
-		'/api/auth/**',
-		cors({
-			origin: '*', // In production, replace with your actual domain
-			allowHeaders: ['Content-Type', 'Authorization'],
-			allowMethods: ['POST', 'GET', 'OPTIONS'],
-			exposeHeaders: ['Content-Length'],
-			maxAge: 600,
-			credentials: true,
-		}),
-	)
+	.use('*', (c, next) => authCorsMiddleware(c)(c, next))
 	// Middleware to initialize auth instance for each request
 	.use('*', async (c, next) => {
 		const auth = createAuth(c.env, (c.req.raw as any).cf || {});

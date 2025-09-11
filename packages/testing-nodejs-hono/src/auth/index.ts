@@ -18,17 +18,19 @@ function extractDomain(url: string): string {
 }
 
 // Single auth configuration that handles both CLI and runtime scenarios
-function createAuth(env: CloudflareBindings, cf?: IncomingRequestCfProperties) {
-	console.log('createAuth called with env:', env);
+function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) {
+	if (!env) {
+		throw new Error('CloudflareBindings "env" is null or undefined in createAuth');
+	}
 
-	// Create postgres-js connection using Hyperdrive binding
-	const db = env
+	// Handle possibly undefined env
+	const db = env?.DATABASE
 		? drizzle(postgres(env.DATABASE.connectionString), { schema, logger: true })
 		: ({} as any);
 
-	const isDevelopment = env.WORKER_ENV === 'development';
+	const isDevelopment = env?.WORKER_ENV === 'development';
 
-	const kv = env.KV ?? ({} as any);
+	const kv = env?.KV ?? ({} as any);
 
 	return betterAuth({
 		...withCloudflare(
@@ -42,23 +44,23 @@ function createAuth(env: CloudflareBindings, cf?: IncomingRequestCfProperties) {
 				kv,
 			},
 			{
-				baseURL: env.API_DOMAIN,
-				trustedOrigins: [env.API_DOMAIN as string, env?.WEB_DOMAIN as string], // Needed for cross domain cookies
+				baseURL: env?.API_DOMAIN,
+				trustedOrigins: [env?.API_DOMAIN as string, env?.WEB_DOMAIN as string], // Needed for cross domain cookies
 				emailAndPassword: {
 					enabled: true,
 				},
 				socialProviders: {
 					github: {
-						clientId: env.GITHUB_CLIENT_ID,
-						clientSecret: env.GITHUB_CLIENT_SECRET,
+						clientId: env?.GITHUB_CLIENT_ID,
+						clientSecret: env?.GITHUB_CLIENT_SECRET,
 					},
 					google: {
-						clientId: env.GOOGLE_CLIENT_ID,
-						clientSecret: env.GOOGLE_CLIENT_SECRET,
+						clientId: env?.GOOGLE_CLIENT_ID,
+						clientSecret: env?.GOOGLE_CLIENT_SECRET,
 					},
 					discord: {
-						clientId: env.DISCORD_CLIENT_ID,
-						clientSecret: env.DISCORD_CLIENT_SECRET,
+						clientId: env?.DISCORD_CLIENT_ID,
+						clientSecret: env?.DISCORD_CLIENT_SECRET,
 					},
 				},
 				advanced: {
@@ -110,8 +112,8 @@ function createAuth(env: CloudflareBindings, cf?: IncomingRequestCfProperties) {
 	});
 }
 
-// Export for CLI schema generation - you need to provide a mock env or handle this differently
-export const auth = createAuth({} as CloudflareBindings);
+// Export for CLI schema generation
+export const auth = createAuth();
 
 // Export for runtime usage
 export { createAuth };
