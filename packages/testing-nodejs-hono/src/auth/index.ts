@@ -19,12 +19,14 @@ function extractDomain(url: string): string {
 
 // Single auth configuration that handles both CLI and runtime scenarios
 function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) {
+	console.log('createAuth called with env:', env);
+
 	if (!env) {
-		throw new Error('CloudflareBindings "env" is null or undefined in createAuth');
+		throw new Error('CloudflareBindings "env" is null or undefined in createAuth', env);
 	}
 
 	// Handle possibly undefined env
-	const db = env?.DATABASE
+	const db = env
 		? drizzle(postgres(env.DATABASE.connectionString), { schema, logger: true })
 		: ({} as any);
 
@@ -41,7 +43,7 @@ function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) 
 				postgres: {
 					db,
 				},
-				kv,
+				kv: kv as any,
 			},
 			{
 				baseURL: env?.API_DOMAIN,

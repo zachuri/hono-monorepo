@@ -52,7 +52,7 @@ export const errorConverter = (err: unknown, sentry: Toucan): ApiError => {
 const onError: ErrorHandler = (err, c) => {
 	const currentStatus = 'status' in err ? err.status : c.newResponse(null).status;
 	const statusCode = currentStatus !== OK ? (currentStatus as StatusCode) : INTERNAL_SERVER_ERROR;
-	const env = c.env?.NODE_ENV || process.env?.NODE_ENV;
+	const env = c.env?.NODE_ENV;
 	return c.json(
 		{
 			message: err.message,

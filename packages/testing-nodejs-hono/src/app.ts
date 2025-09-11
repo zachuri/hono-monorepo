@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { timing } from 'hono/timing';
@@ -12,13 +11,13 @@ import { sessionMiddleware } from './middleware/session.middleware';
 
 const app = new Hono<AppContext>();
 
+app.use('*', prettyJSON()).use('*', secureHeaders()).use('*', timing());
+// CORS configuration for auth routes
+
+app.use('*', (c, next) => authCorsMiddleware(c)(c, next));
+
+// Middleware to initialize auth instance for each request
 app
-	.use('*', prettyJSON())
-	.use('*', secureHeaders())
-	.use('*', timing())
-	// CORS configuration for auth routes
-	.use('*', (c, next) => authCorsMiddleware(c)(c, next))
-	// Middleware to initialize auth instance for each request
 	.use('*', async (c, next) => {
 		const auth = createAuth(c.env, (c.req.raw as any).cf || {});
 		c.set('auth', auth);

@@ -28,19 +28,7 @@ declare namespace Cloudflare {
 		DATABASE: Hyperdrive;
 	}
 }
-interface CloudflareBindings extends Cloudflare.Env {
-	DISCORD_CLIENT_SECRET: any;
-	DISCORD_CLIENT_ID: any;
-	GOOGLE_CLIENT_SECRET: any;
-	GITHUB_CLIENT_SECRET: any;
-	GOOGLE_CLIENT_ID: any;
-	GITHUB_CLIENT_ID: any;
-	WEB_DOMAIN: string;
-	API_DOMAIN: any;
-	KV: any;
-	WORKER_ENV: string;
-	DATABASE: any;
-}
+interface CloudflareBindings extends Cloudflare.Env {}
 
 // Begin runtime types
 /*! *****************************************************************************

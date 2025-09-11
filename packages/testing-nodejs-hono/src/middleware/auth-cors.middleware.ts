@@ -1,5 +1,4 @@
 import type { Context } from 'hono';
-import { env } from 'hono/adapter';
 import { cors } from 'hono/cors';
 import type { AppContext } from '../lib/app-context';
 import * as HttpStatusCodes from '../lib/http-status-codes';
@@ -22,8 +21,8 @@ import * as HttpStatusPhrases from '../lib/http-status-phrases';
 export function authCorsMiddleware(c: Context<AppContext>) {
 	return cors({
 		origin: [
-			env(c).WEB_DOMAIN || 'http://localhost:3000', // Use env var for frontend domain
-			env(c).API_DOMAIN || 'http://localhost:8787', // and backend
+			c.env.WEB_DOMAIN || 'http://localhost:3000', // Use env var for frontend domain
+			c.env.API_DOMAIN || 'http://localhost:8787', // and backend
 		],
 		allowHeaders: ['Content-Type', 'Authorization'],
 		allowMethods: ['POST', 'GET', 'OPTIONS'],
