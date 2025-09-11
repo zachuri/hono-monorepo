@@ -12,6 +12,10 @@ export const user = pgTable('user', {
 		.$onUpdate(() => /* @__PURE__ */ new Date())
 		.notNull(),
 	isAnonymous: boolean('is_anonymous'),
+	role: text('role').default('user'),
+	banned: boolean('banned').default(false),
+	banReason: text('ban_reason'),
+	banExpires: timestamp('ban_expires'),
 });
 
 export const session = pgTable('session', {
@@ -35,6 +39,7 @@ export const session = pgTable('session', {
 	colo: text('colo'),
 	latitude: text('latitude'),
 	longitude: text('longitude'),
+	impersonatedBy: text('impersonated_by'),
 });
 
 export const account = pgTable('account', {

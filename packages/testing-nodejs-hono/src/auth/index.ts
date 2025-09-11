@@ -114,8 +114,85 @@ function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) 
 	});
 }
 
-// Export for CLI schema generation
-export const auth = createAuth();
+// Export for CLI schema generation - create a minimal config without env
+export const auth = betterAuth({
+	...withCloudflare(
+		{
+			autoDetectIpAddress: true,
+			geolocationTracking: true,
+			cf: {},
+			postgres: {
+				db: {} as any, // Empty db for CLI
+			},
+			kv: {} as any, // Empty kv for CLI
+		},
+		{
+			baseURL: 'http://localhost:8787', // Default for CLI
+			trustedOrigins: ['http://localhost:8787'],
+			emailAndPassword: {
+				enabled: true,
+			},
+			socialProviders: {
+				github: {
+					clientId: 'dummy',
+					clientSecret: 'dummy',
+				},
+				google: {
+					clientId: 'dummy',
+					clientSecret: 'dummy',
+				},
+				discord: {
+					clientId: 'dummy',
+					clientSecret: 'dummy',
+				},
+			},
+			advanced: {
+				crossSubDomainCookies: {
+					enabled: true,
+				},
+				defaultCookieAttributes: {
+					sameSite: 'none',
+					secure: false, // false for localhost
+					domain: undefined,
+				},
+			},
+			plugins: [anonymous(), admin()],
+			user: {
+				additionalFields: {
+					role: {
+						type: 'string',
+						required: false,
+						defaultValue: 'user',
+					},
+					banned: {
+						type: 'boolean',
+						required: false,
+						defaultValue: false,
+					},
+					banReason: {
+						type: 'string',
+						required: false,
+					},
+					banExpires: {
+						type: 'date',
+						required: false,
+					},
+				},
+			},
+			session: {
+				additionalFields: {
+					impersonatedBy: {
+						type: 'string',
+						required: false,
+					},
+				},
+			},
+			rateLimit: {
+				enabled: true,
+			},
+		},
+	),
+});
 
 // Export for runtime usage
 export { createAuth };
