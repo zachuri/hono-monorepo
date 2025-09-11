@@ -1,0 +1,38 @@
+{
+	"name": "testing-nodejs-hono",
+	"scripts": {
+		"dev": "npm run docker:up && wrangler dev",
+		"build": "npx tsc --noEmit",
+		"deploy": "wrangler deploy --minify",
+		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
+		"auth:generate": "npx --yes @better-auth/cli@latest generate --config src/auth/index.ts --output src/db/auth.schema.ts -y",
+		"auth:format": "npx --yes prettier --write src/db/auth.schema.ts",
+		"auth:update": "npm run auth:generate && npm run auth:format",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate:dev": "drizzle-kit migrate",
+		"db:migrate:prod": "drizzle-kit migrate",
+		"db:studio:dev": "drizzle-kit studio",
+		"db:studio:prod": "NODE_ENV=production drizzle-kit studio",
+		"docker:up": "docker compose up -d",
+		"docker:down": "docker compose down",
+		"docker:logs": "docker compose logs -f postgres",
+		"docker:reset": "docker compose down -v && docker-compose up -d",
+		"dev:full": "npm run docker:up && npm run dev"
+	},
+	"dependencies": {
+		"@cloudflare/workers-types": "^4.20250606.0",
+		"@hono/zod-openapi": "^1.1.0",
+		"better-auth": "^1.2.8",
+		"better-auth-cloudflare": "latest",
+		"drizzle-orm": "^0.43.1",
+		"hono": "^4.7.11",
+		"postgres": "^3.4.5",
+		"tldts": "^7.0.13"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.30",
+		"drizzle-kit": "^0.31.1",
+		"typescript": "^5.8.3",
+		"wrangler": "^4.4.0"
+	}
+}

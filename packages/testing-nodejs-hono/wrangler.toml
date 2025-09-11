@@ -1,0 +1,29 @@
+# For more details on how to configure Wrangler, refer to:
+# https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "testing-nodejs-hono"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[placement]
+mode = "smart"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "98b93d1fbb414c0e8e724b328ec87628"
+[[hyperdrive]]
+binding = "DATABASE"
+id = "da1fa55162d948daa7f1c023ed6e2834"
+localConnectionString = "postgresql://postgres:password@localhost:5432/postgres"
+
+
+# To protect the kv id, hyperdrive id, we ignore this
+# file when committing to the repo by running once:
+# git update-index --assume-unchanged wrangler.toml
+#
+# Put back in git if you need to commit this file:
+# git update-index --no-assume-unchanged wrangler.toml
