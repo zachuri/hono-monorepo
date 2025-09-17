@@ -1,32 +1,9 @@
 import type { AppOpenAPI } from '@acme/api/lib/app-context';
 import { apiReference } from '@scalar/hono-api-reference';
 import packageJSON from '../../package.json';
-
-// Middleware to check if user is admin
-async function requireAdmin(c: any, next: () => Promise<void>) {
-	try {
-		const auth = c.get('auth');
-		const session = await auth.api.getSession({
-			headers: c.req.raw.headers,
-		});
-
-		if (!session?.session || !session?.user) {
-			return c.json({ error: 'Authentication required' }, 401);
-		}
-
-		if (session.user.role !== 'admin') {
-			return c.json({ error: 'Admin access required' }, 403);
-		}
-
-		await next();
-	} catch (error) {
-		return c.json({ error: 'Authentication check failed' }, 500);
-	}
-}
+import requireAdminMiddleware from '../middleware/require-admin.middleware';
 
 export default function configureOpenAPI(app: AppOpenAPI) {
-	app.use('*', requireAdmin);
-
 	app.doc('/doc', {
 		openapi: '3.0.0',
 		info: {
@@ -37,7 +14,7 @@ export default function configureOpenAPI(app: AppOpenAPI) {
 
 	app.get(
 		'/reference',
-		requireAdmin,
+		requireAdminMiddleware,
 		apiReference({
 			theme: 'kepler',
 			layout: 'classic',
