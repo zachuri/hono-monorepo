@@ -171,6 +171,9 @@ export default function App() {
 							<div>
 								<strong>ID:</strong> {user.id}
 							</div>
+							<div>
+								<strong>Role:</strong> {user.role}
+							</div>
 						</CardContent>
 					</Card>
 
