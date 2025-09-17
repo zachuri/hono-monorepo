@@ -24,6 +24,8 @@
 		"changeset": "changeset",
 		"version-packages": "changeset version",
 		"release": "turbo build && changeset publish",
+		"cf-typegen": "turbo cf-typegen --filter=@acme/api",
+		"cf-typegen:export": "turbo cf-typegen:export --filter=@acme/api",
 		"ui:add:component": "turbo ui:add --filter=@acme/ui --",
 		"prepare": "lefthook install",
 		"storybook": "storybook dev -p 6006",

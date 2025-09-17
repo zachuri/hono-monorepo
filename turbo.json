@@ -71,6 +71,14 @@
 		"gen:types": {
 			"cache": false
 		},
+		"cf-typegen": {
+			"cache": false,
+			"outputs": ["worker-configuration.d.ts"]
+		},
+		"cf-typegen:export": {
+			"cache": false,
+			"outputs": ["worker-configuration.d.ts", "src/types/cloudflare.ts"]
+		},
 		"pages:build": {
 			"dependsOn": ["^build"]
 		}

@@ -25,8 +25,34 @@ This example demonstrates how to integrate [Better Auth](https://github.com/bett
 1. Navigate to this directory:
 
 ```bash
-cd examples/hono
+cd packages/api
 ```
+
+### Type Generation
+
+The project uses Cloudflare Workers types that need to be generated and synchronized across the monorepo.
+
+#### Generate Cloudflare Types (Local)
+
+```bash
+# Generate types locally
+bun run cf-typegen
+
+# Generate and export to shared location
+bun run cf-typegen:export
+```
+
+#### Generate Cloudflare Types (Workspace)
+
+```bash
+# From project root - generate types
+bun run cf-typegen
+
+# From project root - generate and export types to API package
+bun run cf-typegen:export
+```
+
+The generated types are now kept within the API package at `src/types/cloudflare.ts` for better organization, as they are Cloudflare-specific and not shared across the entire monorepo.
 
 2. Install dependencies:
 
@@ -151,8 +177,8 @@ The application uses Cloudflare bindings defined in `wrangler.toml`:
 
 ```typescript
 interface CloudflareBindings {
-    DATABASE: D1Database;
-    KV: KVNamespace;
+  DATABASE: D1Database;
+  KV: KVNamespace;
 }
 ```
 
@@ -161,7 +187,10 @@ interface CloudflareBindings {
 The auth configuration in `src/auth/index.ts` uses a simplified single-function approach that handles both CLI schema generation and runtime scenarios:
 
 ```typescript
-import type { D1Database, IncomingRequestCfProperties } from "@cloudflare/workers-types";
+import type {
+  D1Database,
+  IncomingRequestCfProperties,
+} from "@cloudflare/workers-types";
 import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { anonymous } from "better-auth/plugins";
@@ -171,46 +200,51 @@ import { schema } from "../db";
 import type { CloudflareBindings } from "../env";
 
 // Single auth configuration that handles both CLI and runtime scenarios
-function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) {
-    // Use actual DB for runtime, empty object for CLI
-    const db = env ? drizzle(env.DATABASE, { schema, logger: true }) : ({} as any);
+function createAuth(
+  env?: CloudflareBindings,
+  cf?: IncomingRequestCfProperties
+) {
+  // Use actual DB for runtime, empty object for CLI
+  const db = env
+    ? drizzle(env.DATABASE, { schema, logger: true })
+    : ({} as any);
 
-    return betterAuth({
-        ...withCloudflare(
-            {
-                autoDetectIpAddress: true, // Auto-detect IP from Cloudflare headers
-                geolocationTracking: true, // Track geolocation in sessions
-                cf: cf || {},
-                d1: env
-                    ? {
-                          db,
-                          options: {
-                              usePlural: true,
-                              debugLogs: true,
-                          },
-                      }
-                    : undefined,
-                kv: env?.KV,
-            },
-            {
-                plugins: [anonymous()], // Enable anonymous authentication
-                rateLimit: {
-                    // Enable rate limiting
-                    enabled: true,
-                },
+  return betterAuth({
+    ...withCloudflare(
+      {
+        autoDetectIpAddress: true, // Auto-detect IP from Cloudflare headers
+        geolocationTracking: true, // Track geolocation in sessions
+        cf: cf || {},
+        d1: env
+          ? {
+              db,
+              options: {
+                usePlural: true,
+                debugLogs: true,
+              },
             }
-        ),
-        // Only add database adapter for CLI schema generation
-        ...(env
-            ? {}
-            : {
-                  database: drizzleAdapter({} as D1Database, {
-                      provider: "sqlite",
-                      usePlural: true,
-                      debugLogs: true,
-                  }),
-              }),
-    });
+          : undefined,
+        kv: env?.KV,
+      },
+      {
+        plugins: [anonymous()], // Enable anonymous authentication
+        rateLimit: {
+          // Enable rate limiting
+          enabled: true,
+        },
+      }
+    ),
+    // Only add database adapter for CLI schema generation
+    ...(env
+      ? {}
+      : {
+          database: drizzleAdapter({} as D1Database, {
+            provider: "sqlite",
+            usePlural: true,
+            debugLogs: true,
+          }),
+        }),
+  });
 }
 
 // Export for CLI schema generation

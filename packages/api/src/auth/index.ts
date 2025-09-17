@@ -6,6 +6,7 @@ import { withCloudflare } from 'better-auth-cloudflare';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { parse } from 'tldts';
+import type { CloudflareBindings } from '../types/cloudflare';
 
 // Define the BetterAuth type
 type BetterAuth = ReturnType<typeof betterAuth>;

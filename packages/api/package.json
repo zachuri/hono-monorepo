@@ -6,6 +6,8 @@
 		"build": "bunx tsc --noEmit",
 		"deploy": "wrangler deploy --minify",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
+		"cf-typegen:export": "bun run cf-typegen && bun run cf-typegen:sync",
+		"cf-typegen:sync": "bun run scripts/sync-types.ts",
 		"auth:generate": "npx --yes @better-auth/cli@latest generate --config src/auth/index.ts --output src/db/auth.schema.ts -y",
 		"auth:format": "bunx --bun prettier --write src/db/auth.schema.ts",
 		"auth:update": "bun run auth:generate && bun run auth:format",
