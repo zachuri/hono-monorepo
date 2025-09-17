@@ -1,0 +1,2 @@
+-- Empty migration from introspection
+-- This is just a placeholder to allow subsequent migrations to run
