@@ -1,7 +1,6 @@
 import { schema } from '@acme/api/db';
 import type { AppContext } from '@acme/api/lib/app-context';
-import type { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import type { Context } from 'hono';
 import postgres from 'postgres';
 
@@ -20,4 +19,4 @@ export const initializeDatabase = (c: Context<AppContext>) => {
 	return db;
 };
 
-export type Database = NeonHttpDatabase<typeof schema>;
+export type Database = ReturnType<typeof drizzle<typeof schema>>;
