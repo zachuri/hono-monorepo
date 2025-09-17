@@ -7,6 +7,9 @@ import postgres from 'postgres';
 import { parse } from 'tldts';
 import { schema } from '../db';
 
+// Define the BetterAuth type
+type BetterAuth = ReturnType<typeof betterAuth>;
+
 function extractDomain(url: string): string {
 	try {
 		const domain = parse(url).domain;
@@ -18,7 +21,7 @@ function extractDomain(url: string): string {
 }
 
 // Single auth configuration that handles both CLI and runtime scenarios
-function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) {
+function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties): BetterAuth {
 	console.log('createAuth called with env:', env);
 
 	if (!env) {
@@ -115,7 +118,7 @@ function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) 
 }
 
 // Export for CLI schema generation - create a minimal config without env
-export const auth = betterAuth({
+export const auth: BetterAuth = betterAuth({
 	...withCloudflare(
 		{
 			autoDetectIpAddress: true,
@@ -196,3 +199,8 @@ export const auth = betterAuth({
 
 // Export for runtime usage
 export { createAuth };
+
+// Export types for frontend usage
+export type { BetterAuth };
+export type Session = BetterAuth['$Infer']['Session'];
+export type User = Session['user'];

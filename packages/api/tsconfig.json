@@ -1,13 +1,20 @@
 {
-  "extends": "@acme/tsconfig/api.json",
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@acme/api/*": ["./src/*"],
-      "@acme/app/*": ["../app/*"],
-      "@acme/tsconfig": ["../tsconfig/*"]
-    }
-  }
+	"extends": "@acme/tsconfig/api.json",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"strict": true,
+		"skipLibCheck": true,
+		"lib": ["ESNext"],
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx",
+		"types": ["@cloudflare/workers-types"],
+		"paths": {
+			"@acme/api/*": ["./src/*"],
+			"@acme/app/*": ["../app/*"],
+			"@acme/tsconfig": ["../tsconfig/*"]
+		}
+	},
+	"include": ["worker-configuration.d.ts", "src/**/*.ts", "extended-env.d.ts"]
 }

@@ -1,5 +1,9 @@
 # TODO
 
+## Infastructure
+
+- [ ] use sst
+
 ## API
 
 - [ ] role based auth

@@ -1,1 +1,0 @@
--   [ ] add configuration for auth providers to work after this

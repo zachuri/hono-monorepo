@@ -1,10 +1,12 @@
 import type { OpenAPIHono, RouteConfig, RouteHandler } from '@hono/zod-openapi';
 import type { auth, createAuth } from '../auth';
+import type { Database } from '../middleware/init-database.middleware';
 
 export type Variables = {
 	auth: ReturnType<typeof createAuth>;
 	user: typeof auth.$Infer.Session.user | null;
 	session: typeof auth.$Infer.Session.session | null;
+	db: Database; // Use the proper Database type
 };
 
 export type AppContext = {

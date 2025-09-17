@@ -5,22 +5,22 @@ import { createMessageObjectSchema } from '@acme/api/lib/openapi/schemas';
 import { createRoute } from '@hono/zod-openapi';
 
 const router = createRouter().openapi(
-  createRoute({
-    tags: ['Index'],
-    method: 'get',
-    path: '/',
-    responses: {
-      [HttpStatusCodes.OK]: jsonContent(createMessageObjectSchema('Hono APi'), 'Hono API Index'),
-    },
-  }),
-  c => {
-    return c.json(
-      {
-        message: 'Hono API',
-      },
-      HttpStatusCodes.OK,
-    );
-  },
+	createRoute({
+		tags: ['Index'],
+		method: 'get',
+		path: '/',
+		responses: {
+			[HttpStatusCodes.OK]: jsonContent(createMessageObjectSchema('Hono APi'), 'Hono API Index'),
+		},
+	}),
+	c => {
+		return c.json(
+			{
+				message: 'Hono API',
+			},
+			HttpStatusCodes.OK,
+		);
+	},
 );
 
 export default router;

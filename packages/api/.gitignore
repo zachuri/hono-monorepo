@@ -16,8 +16,9 @@ node_modules/
 .wrangler
 
 # env
-.env*
-.dev.vars*
+.env
+.env.production
+.dev.vars
 
 # logs
 logs/

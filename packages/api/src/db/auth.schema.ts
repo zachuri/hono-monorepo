@@ -1,4 +1,5 @@
 import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { createSelectSchema } from 'drizzle-zod';
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -73,3 +74,8 @@ export const verification = pgTable('verification', {
 		.$onUpdate(() => /* @__PURE__ */ new Date())
 		.notNull(),
 });
+
+// Schemas
+export const getUserSchema = createSelectSchema(user);
+export const getUserSessionSchema = createSelectSchema(session);
+export const getUserAccountsSchema = createSelectSchema(account);

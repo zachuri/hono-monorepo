@@ -1,423 +1,224 @@
-# 🔥 Hono API with Cloudflare Workers
+# Better Auth Cloudflare Hono Example
 
-A high-performance serverless API built with Hono and deployed on Cloudflare Workers, featuring authentication, database integration, and OpenAPI documentation.
+This example demonstrates how to integrate [Better Auth](https://github.com/better-auth/better-auth) with [Hono](https://hono.dev/) on Cloudflare Workers using the `better-auth-cloudflare` plugin.
 
-## 📋 Table of Contents
+## Features
 
-1. [Quick Start](#-quick-start)
-2. [Environment Variables](#-environment-variables)
-3. [Authentication Setup](#-authentication-setup)
-4. [Database Integration](#-database-integration)
-5. [Cloudflare Workers Deployment](#-cloudflare-workers-deployment)
-6. [Development](#-development)
-7. [API Documentation](#-api-documentation)
+- 🚀 **Hono Framework**: Lightning-fast web framework for Cloudflare Workers
+- 🗄️ **D1 Database Integration**: SQLite database via Cloudflare D1
+- 🔌 **KV Storage Integration**: Session caching via Cloudflare KV
+- 📍 **Automatic Geolocation Tracking**: Enriches sessions with location data
+- 🌐 **Cloudflare IP Detection**: Automatic IP address detection
+- 👤 **Anonymous Authentication**: Built-in anonymous user authentication
+- 🔐 **Session Management**: Secure session handling with geolocation
 
----
-
-## 🚀 Quick Start
+## Getting Started
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) installed
-- [Cloudflare account](https://cloudflare.com/) with Workers enabled
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) installed
+- Node.js 18+ and pnpm
+- Cloudflare account with Workers and D1 enabled
+- Wrangler CLI installed globally: `npm install -g wrangler`
 
-### Local Development
+### Installation
 
-Start the development server:
-
-```bash
-# Start with local KV storage
-bun run dev
-
-# Start with remote KV storage (for testing production-like behavior)
-bun run dev:remote
-```
-
-The API will be available at `http://localhost:8787`
-
-### First-time Setup
-
-1. **Install dependencies**:
-
-   ```bash
-   bun install
-   ```
-
-2. **Set up environment variables** (see [Environment Variables](#-environment-variables) section)
-
-3. **Configure Cloudflare** (see [Cloudflare Workers Deployment](#-cloudflare-workers-deployment) section)
-
----
-
-## 🔧 Environment Variables
-
-### Required Variables
-
-Create a `.dev.vars` file in the `packages/api` directory with the following variables:
+1. Navigate to this directory:
 
 ```bash
-# Environment
-ENV=development
-
-# Database
-DATABASE_URL=your_neon_database_url
-
-# Authentication
-BETTER_AUTH_SECRET=your_secret_key
-BETTER_AUTH_URL=http://localhost:8787
-
-# OAuth Providers (optional)
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-
-# API Configuration
-API_URL=http://localhost:8787
+cd examples/hono
 ```
 
-### Environment-Specific Files
-
-- `.dev.vars.local` - Local development
-- `.dev.vars.staging` - Staging environment
-- `.dev.vars.production` - Production environment
-
-### Using Environment Variables
-
-**Within Hono Context**:
-
-```typescript
-// Access environment variables
-const dbUrl = env(c).DATABASE_URL;
-const authSecret = env(c).BETTER_AUTH_SECRET;
-
-// Set custom variables in context
-c.set("CUSTOM_VAR", "value");
-```
-
-**Outside Hono Context**:
-
-```typescript
-import dotenv from "dotenv";
-dotenv.config({ path: ".dev.vars" });
-
-const dbUrl = process.env.DATABASE_URL;
-```
-
-## 🔐 Authentication Setup
-
-This API uses [Better Auth](https://better-auth.com/) for modern authentication with multiple providers.
-
-### Supported Providers
-
-- **Google OAuth** - Social login with Google
-- **GitHub OAuth** - Social login with GitHub
-- **Email/Password** - Traditional authentication
-
-### OAuth Provider Setup
-
-#### Google OAuth
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing one
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials
-5. Add authorized redirect URIs:
-   - `http://localhost:8787/api/auth/callback/google` (development)
-   - `https://your-domain.com/api/auth/callback/google` (production)
-
-#### GitHub OAuth
-
-1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Create a new OAuth App
-3. Set Authorization callback URL:
-   - `http://localhost:8787/api/auth/callback/github` (development)
-   - `https://your-domain.com/api/auth/callback/github` (production)
-
-### Configuration
-
-Add your OAuth credentials to `.dev.vars`:
+2. Install dependencies:
 
 ```bash
-# Google OAuth
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# GitHub OAuth
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-
-# Better Auth
-BETTER_AUTH_SECRET=your_32_character_secret_key
-BETTER_AUTH_URL=http://localhost:8787
+pnpm install
 ```
 
-### Adding New Providers
+3. Configure your Cloudflare bindings in `wrangler.toml`:
 
-1. Update `.dev.vars` with new provider credentials
-2. Configure the provider in your Better Auth setup
-3. Update OAuth callback URLs in provider settings
+```toml
+[[d1_databases]]
+binding = "DATABASE"
+database_name = "your-database-name"
+database_id = "your-database-id"
 
-## 🗄️ Database Integration
-
-This API uses [Drizzle ORM](https://orm.drizzle.team/) with [Neon Database](https://neon.tech/) for PostgreSQL.
+[[kv_namespaces]]
+binding = "KV"
+id = "your-kv-namespace-id"
+```
 
 ### Database Setup
 
-1. **Create a Neon Database**:
-
-   - Sign up at [Neon](https://neon.tech/)
-   - Create a new database
-   - Copy the connection string
-
-2. **Configure Database URL**:
-   ```bash
-   DATABASE_URL=postgresql://username:password@hostname/database?sslmode=require
-   ```
-
-### Database Commands
+1. Create a D1 database:
 
 ```bash
-# Generate migrations
-bun run db:generate
-
-# Run migrations
-bun run db:migrate
-
-# Push schema changes (development)
-bun run db:push
-
-# Open Drizzle Studio (database GUI)
-bun run db:studio
-
-# Seed the database
-bun run db:seed
+wrangler d1 create your-database-name
 ```
 
-### Cloudflare Integration
+2. Update the `database_id` in `wrangler.toml` with the ID from the previous command.
 
-1. **Connect Neon to Cloudflare**:
-
-   - Go to Cloudflare Workers & Pages dashboard
-   - Navigate to your worker settings
-   - Go to Settings > Integrations
-   - Connect your Neon database
-
-2. **Environment Variables**:
-   - The `DATABASE_URL` will be automatically available in your worker
-   - No additional configuration needed for production
-
----
-
-## 🚀 Cloudflare Workers Deployment
-
-### Prerequisites
-
-1. **Cloudflare Account**: Sign up at [cloudflare.com](https://cloudflare.com)
-2. **Wrangler CLI**: Install globally with `bun install -g wrangler`
-3. **Authentication**: Run `wrangler login` to authenticate
-
-### Initial Setup
-
-#### 1. Create KV Namespaces
+3. Create a KV namespace:
 
 ```bash
-# Create staging KV namespace
-bunx wrangler kv:namespace create "hono-monorepo-staging-kv" --env staging
-
-# Create production KV namespace
-bunx wrangler kv:namespace create "hono-monorepo-production-kv" --env production
+wrangler kv:namespace create "KV"
 ```
 
-#### 2. Update wrangler.toml
+4. Update the KV `id` in `wrangler.toml` with the ID from the previous command.
 
-After creating KV namespaces, update the IDs in `wrangler.toml`:
-
-```toml
-[env.staging]
-name = "hono-monorepo-staging"
-
-[[env.staging.kv_namespaces]]
-binding = "KV_BETTER_AUTH"
-id = "your-actual-staging-kv-id-here"
-
-[env.production]
-name = "hono-monorepo-production"
-
-[[env.production.kv_namespaces]]
-binding = "KV_BETTER_AUTH"
-id = "your-actual-production-kv-id-here"
-```
-
-#### 3. Deploy Secrets
+5. Apply database migrations:
 
 ```bash
-# Deploy staging secrets
-bun run push:secret:staging
-
-# Deploy production secrets
-bun run push:secret:production
+pnpm run db:migrate:prod
 ```
 
-### Deployment Commands
+### Deployment
+
+Deploy to Cloudflare Workers:
 
 ```bash
-# Deploy to staging
-bun run deploy:staging
-
-# Deploy to production
-bun run deploy:production
-
-# Deploy to default environment
-bun run deploy
+pnpm run deploy
 ```
 
-### Environment Configuration
+## Project Structure
 
-#### Staging Environment
+```
+src/
+├── auth/
+│   └── index.ts          # Better Auth configuration
+├── db/
+│   ├── index.ts          # Database exports
+│   ├── schema.ts         # Combined schema
+│   └── auth.schema.ts    # Generated auth schema
+├── env.d.ts              # TypeScript environment types
+└── index.ts              # Hono application
 
-- **URL**: `https://hono-monorepo-staging.your-subdomain.workers.dev`
-- **Database**: Staging Neon database
-- **KV Storage**: Staging namespace
-
-#### Production Environment
-
-- **URL**: `https://hono-monorepo-production.your-subdomain.workers.dev`
-- **Database**: Production Neon database
-- **KV Storage**: Production namespace
-
-### Custom Domain Setup
-
-1. **Add Custom Domain**:
-
-   - Go to Cloudflare Workers dashboard
-   - Select your worker
-   - Go to Settings > Triggers
-   - Add custom domain (e.g., `api.yourdomain.com`)
-
-2. **DNS Configuration**:
-   - Add CNAME record pointing to your worker
-   - Enable Cloudflare proxy (orange cloud)
-
-### Monitoring & Analytics
-
-- **Real-time Metrics**: Available in Cloudflare dashboard
-- **Error Tracking**: Built-in error reporting
-- **Performance**: Edge performance metrics
-- **Logs**: Real-time worker logs
-
-## 🛠️ Development
-
-### Local Development
-
-```bash
-# Start with local KV storage (faster, offline)
-bun run dev
-
-# Start with remote KV storage (production-like testing)
-bun run dev:remote
+drizzle/                  # Database migrations
+wrangler.toml            # Cloudflare Worker configuration
 ```
 
-### Development Tools
+## Available Scripts
 
-#### Database Management
+### Authentication Scripts
 
-```bash
-# Open Drizzle Studio (database GUI)
-bun run db:studio
+- `pnpm run auth:generate` - Generate auth schema from Better Auth config
+- `pnpm run auth:format` - Format the generated auth schema
+- `pnpm run auth:update` - Generate and format auth schema
 
-# Generate new migration
-bun run db:generate
+### Database Scripts
 
-# Apply migrations
-bun run db:migrate
+- `pnpm run db:generate` - Generate new database migrations
+- `pnpm run db:migrate:dev` - Apply migrations to local D1 database
+- `pnpm run db:migrate:prod` - Apply migrations to production D1 database
+- `pnpm run db:studio:dev` - Open Drizzle Studio for local database
+- `pnpm run db:studio:prod` - Open Drizzle Studio for production database
 
-# Push schema changes (development only)
-bun run db:push
-```
+### Development Scripts
 
-#### KV Storage Management
+- `pnpm run dev` - Start development server
+- `pnpm run deploy` - Deploy to Cloudflare Workers
+- `pnpm run cf-typegen` - Generate Cloudflare binding types
 
-```bash
-# List all keys in local KV
-bunx wrangler kv key list --namespace-id YOUR_NAMESPACE_ID --preview
-
-# Get a specific key value
-bunx wrangler kv key get "your-key-name" --namespace-id YOUR_NAMESPACE_ID --preview
-
-# Set a key value
-bunx wrangler kv key put "key-name" "value" --namespace-id YOUR_NAMESPACE_ID --preview
-
-# Delete a key
-bunx wrangler kv key delete "key-name" --namespace-id YOUR_NAMESPACE_ID --preview
-```
-
-#### Testing
-
-```bash
-# Run tests
-bun test
-
-# Run tests with coverage
-bun test --coverage
-
-# Run tests in watch mode
-bun test --watch
-```
-
-## 📚 API Documentation
-
-### OpenAPI Documentation
-
-The API automatically generates OpenAPI documentation. Access it at:
-
-- **Local**: `http://localhost:8787/api/docs`
-- **Staging**: `https://hono-monorepo-staging.your-subdomain.workers.dev/api/docs`
-- **Production**: `https://hono-monorepo-production.your-subdomain.workers.dev/api/docs`
+## Usage
 
 ### API Endpoints
 
-#### Authentication Endpoints
+- `GET /` - Demo page with anonymous authentication UI
+- `GET /health` - Health check endpoint
+- `GET /protected` - Protected route demo
+- `ALL /api/auth/*` - All Better Auth routes (handled by better-auth)
+- `POST /api/auth/sign-in/anonymous` - Anonymous login
+- `POST /api/auth/sign-out` - Sign out
+- `GET /api/auth/get-session` - Get current session
+- `GET /api/auth/cloudflare/geolocation` - Get geolocation data
 
-- `POST /api/auth/signin` - Sign in with email/password
-- `POST /api/auth/signup` - Sign up with email/password
-- `GET /api/auth/signin/google` - Google OAuth sign in
-- `GET /api/auth/signin/github` - GitHub OAuth sign in
-- `POST /api/auth/signout` - Sign out
-- `GET /api/auth/session` - Get current session
+### Geolocation Tracking
 
-#### User Endpoints
+When `geolocationTracking` is enabled, user sessions automatically include:
 
-- `GET /api/user` - Get current user
-- `PUT /api/user` - Update user profile
-- `DELETE /api/user` - Delete user account
+- `timezone` - User's timezone
+- `city` - User's city
+- `country` - User's country
+- `region` - User's region/state
+- `regionCode` - Region code
+- `colo` - Cloudflare colo data center
+- `latitude` & `longitude` - Coordinates
 
-### Error Handling
+## Configuration
 
-The API uses standard HTTP status codes:
+### Environment Variables
 
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `500` - Internal Server Error
+The application uses Cloudflare bindings defined in `wrangler.toml`:
 
-### Rate Limiting
+```typescript
+interface CloudflareBindings {
+    DATABASE: D1Database;
+    KV: KVNamespace;
+}
+```
 
-- **Default**: 100 requests per minute per IP
-- **Authentication**: 5 attempts per minute per IP
-- **API**: 1000 requests per hour per authenticated user
+### Better Auth Configuration
 
----
+The auth configuration in `src/auth/index.ts` uses a simplified single-function approach that handles both CLI schema generation and runtime scenarios:
 
-## 🔗 Useful Links
+```typescript
+import type { D1Database, IncomingRequestCfProperties } from "@cloudflare/workers-types";
+import { betterAuth } from "better-auth";
+import { withCloudflare } from "better-auth-cloudflare";
+import { anonymous } from "better-auth/plugins";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { drizzle } from "drizzle-orm/d1";
+import { schema } from "../db";
+import type { CloudflareBindings } from "../env";
 
-- [Hono Documentation](https://hono.dev/)
-- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
-- [Better Auth Documentation](https://better-auth.com/)
-- [Drizzle ORM Documentation](https://orm.drizzle.team/)
-- [Neon Database Documentation](https://neon.tech/docs)
-- [Wrangler CLI Documentation](https://developers.cloudflare.com/workers/wrangler/)
+// Single auth configuration that handles both CLI and runtime scenarios
+function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties) {
+    // Use actual DB for runtime, empty object for CLI
+    const db = env ? drizzle(env.DATABASE, { schema, logger: true }) : ({} as any);
+
+    return betterAuth({
+        ...withCloudflare(
+            {
+                autoDetectIpAddress: true, // Auto-detect IP from Cloudflare headers
+                geolocationTracking: true, // Track geolocation in sessions
+                cf: cf || {},
+                d1: env
+                    ? {
+                          db,
+                          options: {
+                              usePlural: true,
+                              debugLogs: true,
+                          },
+                      }
+                    : undefined,
+                kv: env?.KV,
+            },
+            {
+                plugins: [anonymous()], // Enable anonymous authentication
+                rateLimit: {
+                    // Enable rate limiting
+                    enabled: true,
+                },
+            }
+        ),
+        // Only add database adapter for CLI schema generation
+        ...(env
+            ? {}
+            : {
+                  database: drizzleAdapter({} as D1Database, {
+                      provider: "sqlite",
+                      usePlural: true,
+                      debugLogs: true,
+                  }),
+              }),
+    });
+}
+
+// Export for CLI schema generation
+export const auth = createAuth();
+
+// Export for runtime usage
+export { createAuth };
+```
+
+—
+Powered by better-auth-cloudflare

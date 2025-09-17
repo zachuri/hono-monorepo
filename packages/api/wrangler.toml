@@ -1,42 +1,29 @@
-name = "hono-learn"
+# For more details on how to configure Wrangler, refer to:
+# https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "testing-nodejs-hono"
 main = "src/index.ts"
-compatibility_date = "2024-12-24"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
 
-# Local development KV
+[observability]
+enabled = true
+
+[placement]
+mode = "smart"
+
 [[kv_namespaces]]
-binding = "KV_BETTER_AUTH"
-id = "acfb6448369840a1ac00caec6a90c596"
-preview_id = "acfb6448369840a1ac00caec6a90c596"
-
-[env.production]
-name = "hono-monorepo-production"
-
-# Production KV namespace
-[[env.production.kv_namespaces]]
-binding = "KV_BETTER_AUTH"  # Same binding name
-id = "e3dae129577647a6a921d32f520e4bda" # `bunx wrangler kv namespace create KV_BETTER_AUTH_PROD`
-
-[[env.production.routes]]
-pattern = "hono-monorepo-api.zachuri.com/*"
-zone_name = "zachuri.com"
-
-[env.staging]
-name = "hono-monorepo-staging"
-
-# Staging KV namespace
-[[env.staging.kv_namespaces]]
-binding = "KV_BETTER_AUTH"  # Same binding name
-id = "8f8e49da86e94252b74a84c33f684c59" # `bunx wrangler kv namespace create KV_BETTER_AUTH_STAGING`
-
-[[env.staging.routes]]
-pattern = "hono-monorepo-staging-api.zachuri.com/*"
-zone_name = "zachuri.com"
+binding = "KV"
+id = "98b93d1fbb414c0e8e724b328ec87628"
+[[hyperdrive]]
+binding = "DATABASE"
+id = "da1fa55162d948daa7f1c023ed6e2834"
+localConnectionString = "postgresql://postgres:password@localhost:5432/postgres"
 
 
-# For public vars
-
-# [env.staging.vars]
-# API_HOST = "hono-api.zachuri.com"
-
-# [env.production.vars]
-# API_HOST = "hono-api.zachuri.com"
+# To protect the kv id, hyperdrive id, we ignore this
+# file when committing to the repo by running once:
+# git update-index --assume-unchanged wrangler.toml
+#
+# Put back in git if you need to commit this file:
+# git update-index --no-assume-unchanged wrangler.toml
