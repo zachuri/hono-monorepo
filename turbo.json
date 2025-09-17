@@ -8,6 +8,17 @@
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
 		},
+		"@acme/api#build": {
+			"outputs": []
+		},
+		"build:api": {
+			"dependsOn": ["^build"],
+			"outputs": []
+		},
+		"type-check": {
+			"dependsOn": ["^build"],
+			"outputs": []
+		},
 		"test:e2e": {
 			"outputs": ["tests/coverage/e2e/**"]
 		},
