@@ -16,6 +16,6 @@ export default async function requireAdminMiddleware(c: any, next: () => Promise
 
 		await next();
 	} catch (error) {
-		return c.json({ error: 'Authentication check failed' }, 500);
+		return c.json({ error: 'Authentication check failed', details: error }, 500);
 	}
 }
