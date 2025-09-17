@@ -10,6 +10,7 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { timing } from 'hono/timing';
+import geolocationMiddleware from '../middleware/geolocation.middleware';
 
 // Router for OPENAPI
 export function createRouter() {
@@ -26,6 +27,7 @@ export default function createApp() {
 		.use('*', prettyJSON())
 		.use('*', secureHeaders())
 		.use('*', timing())
+		.use('*', geolocationMiddleware)
 		// CORS configuration for auth routes
 		.use('*', (c, next) => authCorsMiddleware(c)(c, next))
 		// Middleware to initialize auth instance for each request
