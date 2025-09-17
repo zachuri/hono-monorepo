@@ -1,26 +1,7 @@
 import type { AppRouteHandler } from '@acme/api/lib/app-context';
 import * as HttpStatusCodes from '@acme/api/lib/http-status-codes';
 import * as HttpStatusPhrases from '@acme/api/lib/http-status-phrases';
-import type { GetUserAccountsRoute, GetUserRoute, GetUserSessionRoute } from './user.route';
-
-export const getUser: AppRouteHandler<GetUserRoute> = async c => {
-	const user = c.get('user');
-	if (!user) {
-		return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND);
-	}
-
-	return c.json(user, HttpStatusCodes.OK);
-};
-
-export const getUserSession: AppRouteHandler<GetUserSessionRoute> = async c => {
-	const session = c.get('session');
-
-	if (!session) {
-		return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND);
-	}
-
-	return c.json(session, HttpStatusCodes.OK);
-};
+import type { GetUserAccountsRoute } from './user.route';
 
 export const getUserAccounts: AppRouteHandler<GetUserAccountsRoute> = async c => {
 	const db = c.get('db');

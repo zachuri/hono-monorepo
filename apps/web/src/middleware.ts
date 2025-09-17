@@ -1,4 +1,4 @@
-import type { Session } from '@acme/api/db/schemas';
+import type { auth } from '@acme/api/auth';
 import { env } from '@acme/app/env/next';
 import { betterFetch } from '@better-fetch/fetch';
 import { type NextRequest, NextResponse } from 'next/server';
@@ -12,12 +12,15 @@ export default async function authMiddleware(request: NextRequest) {
 	const isPaswordRoute = passwordRoutes.includes(pathName);
 
 	// Fetch the session data from the backend
-	const { data: session } = await betterFetch<Session>(`${env.API_URL}/api/auth/get-session`, {
-		baseURL: request.nextUrl.origin,
-		headers: {
-			cookie: request.headers.get('cookie') || '',
+	const { data: session } = await betterFetch<typeof auth.$Infer.Session>(
+		`${env.API_URL}/api/auth/get-session`,
+		{
+			baseURL: request.nextUrl.origin,
+			headers: {
+				cookie: request.headers.get('cookie') || '',
+			},
 		},
-	});
+	);
 
 	if (!session) {
 		if (isAuthRoute || isPaswordRoute) {
