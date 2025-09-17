@@ -1,7 +1,7 @@
+import configureOpenAPI from '@acme/api/lib/configure-open-api';
+import createApp from '@acme/api/lib/create-app';
 import index from '@acme/api/routes/index.route';
 import user from '@acme/api/routes/user/user.index';
-import configureOpenAPI from './lib/configure-open-api';
-import createApp from './lib/create-app';
 
 const app = createApp();
 

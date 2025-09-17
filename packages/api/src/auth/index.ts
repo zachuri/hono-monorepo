@@ -1,3 +1,4 @@
+import { schema } from '@acme/api/db';
 import type { IncomingRequestCfProperties } from '@cloudflare/workers-types';
 import { betterAuth } from 'better-auth';
 import { admin, anonymous } from 'better-auth/plugins';
@@ -5,7 +6,6 @@ import { withCloudflare } from 'better-auth-cloudflare';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { parse } from 'tldts';
-import { schema } from '../db';
 
 // Define the BetterAuth type
 type BetterAuth = ReturnType<typeof betterAuth>;

@@ -1,8 +1,8 @@
+import type { AppContext } from '@acme/api/lib/app-context';
+import * as HttpStatusCodes from '@acme/api/lib/http-status-codes';
+import * as HttpStatusPhrases from '@acme/api/lib/http-status-phrases';
 import type { Context } from 'hono';
 import { cors } from 'hono/cors';
-import type { AppContext } from '../lib/app-context';
-import * as HttpStatusCodes from '../lib/http-status-codes';
-import * as HttpStatusPhrases from '../lib/http-status-phrases';
 
 /**
  * CORS Middleware for better authentication.

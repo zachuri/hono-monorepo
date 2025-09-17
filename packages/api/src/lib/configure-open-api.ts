@@ -1,6 +1,6 @@
+import type { AppOpenAPI } from '@acme/api/lib/app-context';
 import { apiReference } from '@scalar/hono-api-reference';
 import packageJSON from '../../package.json';
-import type { AppOpenAPI } from './app-context';
 
 export default function configureOpenAPI(app: AppOpenAPI) {
 	app.doc('/doc', {

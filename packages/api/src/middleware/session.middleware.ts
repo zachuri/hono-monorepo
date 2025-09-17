@@ -1,5 +1,5 @@
+import type { AppContext } from '@acme/api/lib/app-context';
 import type { Context } from 'hono';
-import type { AppContext } from '../lib/app-context';
 
 /**
  * Handle session from auth middleware.

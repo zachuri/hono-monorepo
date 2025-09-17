@@ -1,15 +1,15 @@
+import { createAuth } from '@acme/api/auth';
+import type { AppContext } from '@acme/api/lib/app-context';
+import { defaultHook } from '@acme/api/lib/openapi';
+import { authCorsMiddleware } from '@acme/api/middleware/auth-cors.middleware';
+import { initializeDatabase } from '@acme/api/middleware/init-database.middleware';
+import notFound from '@acme/api/middleware/not-found';
+import onError from '@acme/api/middleware/on-error';
+import { sessionMiddleware } from '@acme/api/middleware/session.middleware';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { timing } from 'hono/timing';
-import { createAuth } from '../auth';
-import { authCorsMiddleware } from '../middleware/auth-cors.middleware';
-import { initializeDatabase } from '../middleware/init-database.middleware';
-import notFound from '../middleware/not-found';
-import onError from '../middleware/on-error';
-import { sessionMiddleware } from '../middleware/session.middleware';
-import type { AppContext } from './app-context';
-import { defaultHook } from './openapi';
 
 // Router for OPENAPI
 export function createRouter() {
