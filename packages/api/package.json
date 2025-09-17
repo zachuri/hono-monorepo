@@ -6,7 +6,7 @@
 		"build": "bunx tsc --noEmit",
 		"deploy": "wrangler deploy --minify",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
-		"auth:generate": "bunx --bun @better-auth/cli@latest generate --config src/auth/index.ts --output src/db/auth.schema.ts -y",
+		"auth:generate": "npx --yes @better-auth/cli@latest generate --config src/auth/index.ts --output src/db/auth.schema.ts -y",
 		"auth:format": "bunx --bun prettier --write src/db/auth.schema.ts",
 		"auth:update": "bun run auth:generate && bun run auth:format",
 		"db:generate": "bunx drizzle-kit generate",
@@ -22,6 +22,7 @@
 		"clean": "rm -rf .wrangler node_modules"
 	},
 	"dependencies": {
+		"@acme/api": "workspace:*",
 		"@cloudflare/workers-types": "^4.20250606.0",
 		"@hono/zod-openapi": "^1.1.0",
 		"@scalar/hono-api-reference": "^0.9.16",
