@@ -3,3 +3,4 @@
 
 - [ ] display geo location and session
 - [ ] update prod env vars to work
+- [ ] add admin support for /refernce to be only seen by admins
