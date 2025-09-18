@@ -3,7 +3,7 @@
 // Run 'bun run cf-typegen:export' to update
 
 export interface CloudflareBindings {
-	KV: KVNamespace;
+	KV: KVNamespace<string>;
 	DATABASE_URL: string;
 	WORKER_ENV: string;
 	JWT_SECRET: string;

@@ -11,7 +11,6 @@ import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { timing } from 'hono/timing';
 import geolocationMiddleware from '../middleware/geolocation.middleware';
-import requireAdminMiddleware from '../middleware/require-admin.middleware';
 
 // Router for OPENAPI
 export function createRouter() {

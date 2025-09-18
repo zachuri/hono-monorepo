@@ -25,7 +25,7 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"postcss.config.mjs"
+		"../../packages/api/worker-configuration.d.ts"
 	],
 	"exclude": ["node_modules"]
 }
