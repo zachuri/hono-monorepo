@@ -9,12 +9,11 @@
 		"lib": ["ESNext"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
-		"types": ["@cloudflare/workers-types"],
+		"types": ["./worker-configuration.d.ts"],
 		"paths": {
 			"@acme/api/*": ["./src/*"],
 			"@acme/app/*": ["../app/*"],
 			"@acme/tsconfig": ["../tsconfig/*"]
 		}
-	},
-	"include": ["worker-configuration.d.ts", "src/**/*.ts", "extended-env.d.ts"]
+	}
 }

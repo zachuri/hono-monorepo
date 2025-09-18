@@ -1,7 +1,6 @@
 import type { auth, createAuth } from '@acme/api/auth';
 import type { Database } from '@acme/api/middleware/init-database.middleware';
 import type { OpenAPIHono, RouteConfig, RouteHandler } from '@hono/zod-openapi';
-import type { CloudflareBindings } from '../types/cloudflare';
 
 export type Variables = {
 	auth: ReturnType<typeof createAuth>;

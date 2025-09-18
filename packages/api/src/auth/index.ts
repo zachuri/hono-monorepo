@@ -1,12 +1,11 @@
 import { schema } from '@acme/api/db';
-import type { IncomingRequestCfProperties } from '@cloudflare/workers-types';
+import type { IncomingRequestCfProperties, KVNamespace } from '@cloudflare/workers-types';
 import { betterAuth } from 'better-auth';
 import { admin, anonymous } from 'better-auth/plugins';
 import { withCloudflare } from 'better-auth-cloudflare';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { parse } from 'tldts';
-import type { CloudflareBindings } from '../types/cloudflare';
 
 // Define the BetterAuth type
 type BetterAuth = ReturnType<typeof betterAuth>;
@@ -23,20 +22,16 @@ function extractDomain(url: string): string {
 
 // Single auth configuration that handles both CLI and runtime scenarios
 function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties): BetterAuth {
-	console.log('createAuth called with env:', env);
-
 	if (!env) {
-		throw new Error('CloudflareBindings "env" is null or undefined in createAuth', env);
+		throw new Error('CloudflareBindings "env" is null or undefined in createAuth');
 	}
 
-	// Handle possibly undefined env
-	const db = env
-		? drizzle(postgres(env.DATABASE.connectionString), { schema, logger: true })
-		: ({} as any);
+	// Handle database connection - env is guaranteed to exist at this point
+	const db = drizzle(postgres((env as any).DATABASE.connectionString), { schema, logger: true });
 
-	const isDevelopment = env?.WORKER_ENV === 'development';
+	const isDevelopment = env.WORKER_ENV === 'development';
 
-	const kv = env?.KV ?? ({} as any);
+	const kv = env.KV as KVNamespace;
 
 	return betterAuth({
 		...withCloudflare(
@@ -47,7 +42,7 @@ function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties):
 				postgres: {
 					db,
 				},
-				kv: kv as any,
+				kv,
 			},
 			{
 				baseURL: env?.API_DOMAIN,
@@ -118,85 +113,7 @@ function createAuth(env?: CloudflareBindings, cf?: IncomingRequestCfProperties):
 	});
 }
 
-// Export for CLI schema generation - create a minimal config without env
-export const auth: BetterAuth = betterAuth({
-	...withCloudflare(
-		{
-			autoDetectIpAddress: true,
-			geolocationTracking: true,
-			cf: {},
-			postgres: {
-				db: {} as any, // Empty db for CLI
-			},
-			kv: {} as any, // Empty kv for CLI
-		},
-		{
-			baseURL: 'http://localhost:8787', // Default for CLI
-			trustedOrigins: ['http://localhost:8787'],
-			emailAndPassword: {
-				enabled: true,
-			},
-			socialProviders: {
-				github: {
-					clientId: 'dummy',
-					clientSecret: 'dummy',
-				},
-				google: {
-					clientId: 'dummy',
-					clientSecret: 'dummy',
-				},
-				discord: {
-					clientId: 'dummy',
-					clientSecret: 'dummy',
-				},
-			},
-			advanced: {
-				crossSubDomainCookies: {
-					enabled: true,
-				},
-				defaultCookieAttributes: {
-					sameSite: 'none',
-					secure: false, // false for localhost
-					domain: undefined,
-				},
-			},
-			plugins: [anonymous(), admin()],
-			user: {
-				additionalFields: {
-					role: {
-						type: 'string',
-						required: false,
-						defaultValue: 'user',
-					},
-					banned: {
-						type: 'boolean',
-						required: false,
-						defaultValue: false,
-					},
-					banReason: {
-						type: 'string',
-						required: false,
-					},
-					banExpires: {
-						type: 'date',
-						required: false,
-					},
-				},
-			},
-			session: {
-				additionalFields: {
-					impersonatedBy: {
-						type: 'string',
-						required: false,
-					},
-				},
-			},
-			rateLimit: {
-				enabled: true,
-			},
-		},
-	),
-});
+export const auth = createAuth();
 
 // Export for runtime usage
 export { createAuth };
