@@ -14,7 +14,6 @@
 			"@acme/ui/*": ["../../packages/ui/src/*"],
 			"@acme/utils/*": ["../../packages/utils/src/*"],
 			"@acme/app/*": ["../../packages/app/*"],
-			"@acme/api/types/*": ["../../packages/api/src/types/*"],
 			"@acme/api/*": ["../../packages/api/src/*"]
 		}
 	},
@@ -24,8 +23,7 @@
 		"**/*.js",
 		"**/*.ts",
 		"**/*.tsx",
-		".next/types/**/*.ts",
-		"../../packages/api/worker-configuration.d.ts"
+		".next/types/**/*.ts"
 	],
 	"exclude": ["node_modules"]
 }
